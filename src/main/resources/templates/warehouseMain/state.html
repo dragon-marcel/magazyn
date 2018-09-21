@@ -9,8 +9,32 @@
     <div class="row">
         <div th:replace="layout/Layout :: navMain"/>
 
-
         <div class="col-12">
+            <table class="table table-bordered text-center">
+                <thead class="thead-light">
+                <tr>
+                    <th colspan="13" style="text-align: center;"> <h2>STAN MAGAZYNU GŁÓWNEGO</h2> </th>
+                </tr>
+                <tr>
+                    <th>LP</th>
+                    <th>ID</th>
+                    <th>PRODUKT</th>
+                    <th>QUANTITY</th>
+
+                </tr>
+                </thead>
+                <tbody th:each="delivery:${delivery}">
+                <tr>
+                    <td th:text="${delivery.id}"></td>
+                    <td th:text="${delivery.description }"></td>
+                    <td th:text="${delivery.document.name }"></td>
+                    <td th:text="${delivery.date}"></td>
+                    <td th:text="${delivery.nameUser}"></td>
+                    <td> <a th:href="${'/warehouseShop/document/delete/'+ delivery.id}" class="text-danger">X</a> </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>        <div class="col-12">
         </div>
     </div>
 </div>

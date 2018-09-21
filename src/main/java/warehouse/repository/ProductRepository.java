@@ -5,11 +5,16 @@ import org.springframework.stereotype.Repository;
 import warehouse.dao.ProductDAO;
 import warehouse.entity.Product;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 @Repository
 public class ProductRepository implements ProductInterface {
     @Autowired
     private ProductDAO productDAO;
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public void save(Product product) {
         productDAO.save(product);
@@ -29,6 +34,12 @@ public class ProductRepository implements ProductInterface {
     @Override
     public Product find(Long id) {
         return productDAO.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Product> productWarehouseMain() {
+        // return em.createQuery("select product from items").getResultList();
+        return  null;
     }
 
 

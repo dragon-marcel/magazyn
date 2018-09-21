@@ -11,4 +11,5 @@ public interface ProductInterface {
     List<Product> findall();
     void delete(Product product);
     Product find(Long id);
+    List<Product>productWarehouseMain();
 }

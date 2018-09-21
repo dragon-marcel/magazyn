@@ -11,25 +11,27 @@ public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "warehouse_id")
+    private Warehouse warehouse;
     private String description;
     @Temporal(TemporalType.DATE)
     private Date date;
-    @OneToOne
-    private User user;
+    private String nameUser;
     @OneToMany(mappedBy = "delivery",cascade = CascadeType.ALL)
     @Column(nullable = true)
     private List<ItemsDelivery> itemdeliveries;
+    @OneToOne
+    private Document document;
+    @OneToOne
+    private Delivery deliverySecond;
 
     public Delivery() {
         this.itemdeliveries = new ArrayList<>();
+        this.date = new Date();
     }
 
-    public Delivery(String description, User user) {
-        this.description = description;
-        this.date = new Date();
-        this.user = user;
-        this.itemdeliveries = new ArrayList<>();
-    }
+
 
     public Long getId() {
         return id;
@@ -37,6 +39,15 @@ public class Delivery {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
     }
 
     public String getDescription() {
@@ -55,12 +66,12 @@ public class Delivery {
         this.date = date;
     }
 
-    public User getUser() {
-        return user;
+    public String getNameUser() {
+        return nameUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setNameUser(String nameUser) {
+        this.nameUser = nameUser;
     }
 
     public List<ItemsDelivery> getItemdeliveries() {
@@ -74,15 +85,12 @@ public class Delivery {
         itemdeliveries.add(itemsDelivery);
     }
 
-    @Override
-    public String toString() {
-        return "Delivery{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", date=" + date +
-                ", user=" + user +
-                ", itemdeliveries=" + itemdeliveries +
-                '}';
+    public Document getDocument() {
+        return document;
+    }
+
+    public void setDocument(Document document) {
+        this.document = document;
     }
 
     public double totalPrice(List<ItemsDelivery> itemsDeliveries){
@@ -90,4 +98,25 @@ public class Delivery {
         return sum;
     }
 
+    public Delivery getDelivery() {
+        return deliverySecond;
+    }
+
+    public void setDelivery(Delivery deliverySecond) {
+        this.deliverySecond = deliverySecond;
+    }
+
+    @Override
+    public String toString() {
+        return "Delivery{" +
+                "id=" + id +
+                ", warehouse=" + warehouse +
+                ", description='" + description + '\'' +
+                ", date=" + date +
+                ", nameUser='" + nameUser + '\'' +
+                ", itemdeliveries=" + itemdeliveries +
+                ", document=" + document +
+                ", deliverySecond=" + deliverySecond +
+                '}';
+    }
 }

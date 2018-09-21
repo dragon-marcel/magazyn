@@ -14,7 +14,7 @@ public class ItemsDelivery {
     @JoinColumn(name = "product_id")
     private Product product;
     private int quantity;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Delivery delivery;
 
     public ItemsDelivery(Product product, int quantity, Delivery delivery) {

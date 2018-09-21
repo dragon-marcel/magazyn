@@ -13,27 +13,32 @@
             <table class="table table-hover table-bordered text-center">
                 <thead class="thead-light">
                 <tr>
-                    <th colspan="12" style="text-align: center;"> <h2>DELIVERY LIST</h2> </th>
+                    <th colspan="12" style="text-align: center;"> <h2>LISTA DOKUMENTÓW</h2> </th>
                 </tr>
                 <tr>
                     <th>LP</th>
-                    <th><a th:href="@{?sort=type}">TYPE</th>
-                    <th><a th:href="@{?sort=date}">DATE</a></th>
-                    <th><a th:href="@{?sort=user}">USER</a></th>
-                    <th>DETAILS</th>
-                    <th></a>DELETE</th>
+                    <th><a th:href="@{?sort=type}">TYP DOKUMENTU</th>
+                    <th>OPIS</th>
+                    <th><a th:href="@{?sort=date}">DATA</a></th>
+                    <th><a th:href="@{?sort=user}">AUTOR</a></th>
+                    <th></a>EDYTUJ</th>
+                    <th>SZCZEGÓŁY</th>
+                    <th></a>USUŃ</th>
 
                 </tr>
                 </thead>
                 <tbody th:each="deliveries,lp:${deliveries}">
                 <tr>
                     <td th:text="${lp.count}">1</td>
+                    <td th:text="${deliveries.document.name}"></td>
                     <td th:text="${deliveries.description}"></td>
                     <td th:text="${deliveries.date}"></td>
-                    <td th:text="${deliveries.user.name}"></td>
-                    <td> <a th:href="${'/warehouseShop/document/'+ deliveries.id}" class="text-success">
+                    <td th:text="${deliveries.nameUser}"></td>
+                    <td> <a th:href="${'/warehouseMain/document/'+ deliveries.id}" class="text-success">
                         <img th:src="@{/img/edit-png.png}" style="width:20px"/></a> </td>
-                    <td> <a th:href="${'/warehouseShop/document/delete/'+ deliveries.id}" class="text-danger">X</a> </td>
+                    <td> <a th:href="${'/warehouseMain/document/'+ deliveries.id}" class="text-success">
+                        <img th:src="@{/img/details.png}" style="width:22px"/></a> </td>
+                    <td> <a th:href="${'/warehouseMain/document/delete/'+ deliveries.id}" class="text-danger">X</a> </td>
 
                 </tr>
                 </tbody>

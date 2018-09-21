@@ -18,7 +18,7 @@
                 <tr>
                     <th>ID</th>
                     <th>DESCRIPTION</th>
-                    <th>TOTAL PRICE</th>
+                    <th>TYPE</th>
                     <th>DATE</th>
                     <th>USER</th>
                     <th>DELETE</th>
@@ -29,10 +29,10 @@
                 <tr>
                     <td th:text="${delivery.id}"></td>
                     <td th:text="${delivery.description }"></td>
-                    <td th:text="${total}"></td>
+                    <td th:text="${delivery.document.name }"></td>
                     <td th:text="${delivery.date}"></td>
-                    <td th:text="${delivery.user.name}"></td>
-                    <td> <a th:href="${'delivery/delete/'+ delivery.id}" class="text-danger">X</a> </td>
+                    <td th:text="${delivery.nameUser}"></td>
+                    <td> <a th:href="${'/warehouseShop/document/delete/'+ delivery.id}" class="text-danger">X</a> </td>
                 </tr>
                 </tbody>
             </table>

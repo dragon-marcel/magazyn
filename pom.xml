@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>magazyn</name>
-	<description>prosta aplikacja magazynowa umo żliwiającą wprowadzanie towaru  i wydawanie go  klientom</description>
+	<description>prosta aplikacja magazynowa umożliwiającą wprowadzanie towaru  i wydawanie go  klientom</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
