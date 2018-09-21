@@ -1,44 +1,44 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/Layout :: head"/>
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="layout/Layout :: head"/>-->
 
-<body>
-<div th:replace="layout/Layout :: navbar"/>
-<div th:replace="layout/Layout :: info"/>
-<div class="container">
-    <div class="row">
-        <div th:replace="layout/Layout :: navMain"/>
+<!--<body>-->
+<!--<div th:replace="layout/Layout :: navbar"/>-->
+<!--<div th:replace="layout/Layout :: info"/>-->
+<!--<div class="container">-->
+    <!--<div class="row">-->
+        <!--<div th:replace="layout/Layout :: navMain"/>-->
 
-        <!-FORM USER-!>
-        <form th:action="@{/warehouseMain/document/delivery/form}" th:object="${}" method="post" >
-            <div class="form-group row">
-                <label for="inputName" class="col-sm-5 col-form-label">Name</label>
-                <div class="col-sm-6">
-                    <input th:type="text" th:field="*{}" class="form-control" id="inputName"
-                           placeholder="name">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="inputPassword" class="col-sm-5 col-form-label">Password</label>
-                <div class="col-sm-6">
-                    <input th:type="password" th:field="" class="form-control"
-                           id="inputPassword"  placeholder="password">
+        <!--<!-FORM USER-!>-->
+        <!--<form th:action="@{/warehouseMain/document/delivery/form}" th:object="${}" method="post" >-->
+            <!--<div class="form-group row">-->
+                <!--<label for="inputName" class="col-sm-5 col-form-label">Name</label>-->
+                <!--<div class="col-sm-6">-->
+                    <!--<input th:type="text" th:field="*{}" class="form-control" id="inputName"-->
+                           <!--placeholder="name">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group row">-->
+                <!--<label for="inputPassword" class="col-sm-5 col-form-label">Password</label>-->
+                <!--<div class="col-sm-6">-->
+                    <!--<input th:type="password" th:field="" class="form-control"-->
+                           <!--id="inputPassword"  placeholder="password">-->
 
-                </div>
-            </div>
+                <!--</div>-->
+            <!--</div>-->
 
-            <div class="form-group row">
-                <div class="col-sm-10">
-                    <button type="submit" class="btn btn-secondary float-right" >
-                        <label th:text="#{text.user.users.save}"/>
-                    </button>
-                </div>
-            </div>
-        </form>
-        <div class="col-12">
-        </div>
-    </div>
-</div>
-<footer th:replace="layout/layout::footer"/>
-</body>
-</html>
+            <!--<div class="form-group row">-->
+                <!--<div class="col-sm-10">-->
+                    <!--<button type="submit" class="btn btn-secondary float-right" >-->
+                        <!--<label th:text="#{text.user.users.save}"/>-->
+                    <!--</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</form>-->
+        <!--<div class="col-12">-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+<!--<footer th:replace="layout/layout::footer"/>-->
+<!--</body>-->
+<!--</html>-->

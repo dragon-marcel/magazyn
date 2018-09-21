@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import warehouse.dao.DeliveryDAO;
 import warehouse.entity.Delivery;
 import warehouse.entity.Document;
+import warehouse.entity.ItemsDelivery;
 import warehouse.entity.Warehouse;
 
 import javax.persistence.EntityManager;
@@ -55,16 +56,28 @@ public class DeliveryMainMainRepository implements DeliveryMainInterface {
     @Override
     @Transactional
     public void delete(Delivery delivery) {
-
         Delivery deliveryFist = delivery;
         Delivery deliverySecond = delivery.getDelivery();
+        if (deliverySecond.getId() == null){
+            em.remove(deliveryFist);
 
-        em.remove(deliveryFist);
-        em.remove(deliverySecond);
-    }
+        }else{
+            em.remove(deliveryFist);
+            em.remove(deliverySecond);
+        }}
 
     @Override
     public Delivery findById(Long id) {
         return deliveryDAO.findById(id).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public void merge(Delivery delivery) {
+        List<ItemsDelivery>deliveries = delivery.getItemdeliveries();
+        Delivery deliverySecond = delivery.getDelivery();
+        deliverySecond.setItemdeliveries(deliveries);
+        em.merge(delivery);
+        em.merge(deliveries);
     }
 }

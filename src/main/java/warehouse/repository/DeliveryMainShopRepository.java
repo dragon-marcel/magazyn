@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import warehouse.dao.DeliveryDAO;
 import warehouse.entity.Delivery;
 import warehouse.entity.Document;
+import warehouse.entity.ItemsDelivery;
 import warehouse.entity.Warehouse;
 
 import javax.persistence.*;
@@ -71,6 +72,10 @@ public class DeliveryMainShopRepository implements DeliveryShopInterface {
     @Override
     @Transactional
     public void merge(Delivery delivery) {
+       List<ItemsDelivery>deliveries = delivery.getItemdeliveries();
+       Delivery deliverySecond = delivery.getDelivery();
+       deliverySecond.setItemdeliveries(deliveries);
         em.merge(delivery);
+        em.merge(deliveries);
     }
 }

@@ -6,10 +6,39 @@
 <div th:replace="layout/Layout :: info"/>
 <div class="container">
     <div class="row">
-
-
-
         <div class="col-12">
+        <table class="table table-hover table-bordered text-center">
+            <thead class="thead-light">
+            <tr>
+                <th colspan="12" style="text-align: center;"> <h2>NOWY PRODUKT</h2> </th>
+            </tr>
+            <tr>
+                <th>NAZWA</th>
+                <th>ILOŚĆ</th>
+                <th>DODAJ</th>
+            </tr>
+            </thead>
+            <tbody>
+            <form th:action="@{/warehouseShop/document/addItem}" th:object="${itemdelivery}" method="post">
+                <tr>
+                    <td><select readonly class="custom-select mr-sm-2" th:field="*{product}">
+                        <option th:each="product : ${products}"
+                                th:value="${product.id}"
+                                th:text="${product.name}"></option>
+                    <td>
+                        <input th:type="text" th:field="*{quantity}">
+                    </td>
+                    <td><button type="submit" class="btn btn-secondary float-right" >
+                        <label >DODAJ</label>
+                    </button></td>
+
+
+                </tr>
+            </form>
+            </tbody>
+        </table>
+
+        <br><br>
             <table class="table table-bordered text-center">
                 <thead class="thead-light">
                 <tr>
@@ -17,11 +46,10 @@
                 </tr>
                 <tr>
                     <th>ID</th>
-                    <th>DESCRIPTION</th>
-                    <th>TOTAL PRICE</th>
-                    <th>DATE</th>
-                    <th>USER</th>
-                    <th>DELETE</th>
+                    <th>OPIS</th>
+                    <th>DATA</th>
+                    <th>URZYTKOWNIK</th>
+                    <th>USUŃ</th>
 
                 </tr>
                 </thead>
@@ -29,7 +57,6 @@
                 <tr>
                     <td th:text="${delivery.id}"></td>
                     <td th:text="${delivery.description }"></td>
-                    <td th:text="${total}"></td>
                     <td th:text="${delivery.date}"></td>
                     <td th:text="${delivery.nameUser}"></td>
                     <td> <a th:href="${'/warehouseShop/document/delete/'+ delivery.id}" class="text-danger">X</a> </td>
@@ -37,92 +64,17 @@
                 </tbody>
             </table>
         </div>
-        <div th:if="${#lists.isEmpty(delivery.itemdeliveries)}">
-
-        <table class="table table-hover table-bordered text-center">
-            <thead class="thead-light">
-            <tr>
-                <th colspan="12" style="text-align: center;"> <h2>NOWY PRODUKT</h2> </th>
-            </tr>
-            <tr>    <th>NAZWA</th>
-                <th>ILOSC</th>
-                <th>DODAJ</th>
-
-            </tr>
-            </thead>
-            <tbody>
-            <form th:action="@{/warehouseShop/document/__${delivery.id}__}" th:object="${itemdelivery}" method="post">
-                <tr>
-                    <td><select readonly class="custom-select mr-sm-2" th:field="*{product}">
-                        <option th:each="product : ${products}"
-                                th:value="${product.id}"
-                                th:text="${product.name}"></option>
-                   <td>
-                    <input th:type="text" th:field="*{quantity}">
-                </td>
-                    <td><button type="submit" class="btn btn-secondary float-right" >
-                        <label th:text="#{text.user.users.save}"/>
-                    </button></td>
-                    <!--<td> <a th:href="${'/warehouseShop/document/'+ deliveries.id}" class="text-success">-->
-                    <!--<img th:src="@{/img/edit-png.png}" style="width:20px"/></a> </td>-->
-                    <!--<td> <a th:href="${'/warehouseShop/document/delete/'+ deliveries.id}" class="text-danger">X</a> </td>-->
-
-                </tr>
-            </form>
-            </tbody>
-        </table>
-        </div>
-        <!--<div class="col-4">-->
-        <!--<div class="card">-->
-        <!--<div class="card-header bg-light">-->
-        <!--<label /></label>-->
-        <!--</div>-->
-        <!--<div class="card-body">-->
-        <!--<h5 class="card-title"/>-->
-        <!--<!-FORM USER-!>-->
-        <!--<form th:action="@{/delivery/details/}" th:object="${newItem}" method="post" >-->
-        <!--<div class="form-group row">-->
-        <!--<label for="inputName" class="col-sm-5 col-form-label">Nazwa</label>-->
-        <!--<div class="col-sm-6">-->
-        <!--<input th:type="hidden" th:field="*{id}"/>-->
-        <!--<input th:type="text" th:field="*{name}" class="form-control" id="inputName"-->
-        <!--placeholder="name">-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--<div class="form-group row">-->
-        <!--<label for="inputPassword" class="col-sm-5 col-form-label">Cena</label>-->
-        <!--<div class="col-sm-6">-->
-        <!--<input th:type="text" th:field="*{price}" class="form-control"-->
-        <!--id="inputPassword"  placeholder="0.0 zł">-->
-
-        <!--</div>-->
-        <!--</div>-->
-
-        <!--<div class="form-group row">-->
-        <!--<div class="col-sm-10">-->
-        <!--<button type="submit" class="btn btn-secondary float-right" >-->
-        <!--<label th:text="#{text.user.users.save}"/>-->
-        <!--</button>-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--</form>-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--</div>-->
         <div class="col-12">
             <table class="table table-bordered text-center">
                 <thead class="thead-light">
                 <tr>
-                    <th colspan="12" style="text-align: center;"> <h2>PRODUCT LIST</h2> </th>
-                </tr>
-                <tr>
                     <th>LP</th>
-                    <th>NAME</th>
-                    <th>QUANTITY</th>
-                    <th>PRICE</th>
-                    <th>TOTAL</th>
-                    <th>EDIT</th>
-                    <th>DELATE</th>
+                    <th>NAZWA</th>
+                    <th>ILOŚĆ</th>
+                    <th>CENA</th>
+                    <th>WARTOŚĆ</th>
+                    <th>EDYTUJ</th>
+                    <th>USUŃ</th>
 
                 </tr>
                 </thead>

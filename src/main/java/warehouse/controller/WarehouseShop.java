@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
-@SessionAttributes("itemdelivery")
+@SessionAttributes(names = "itemdelivery")
 public class WarehouseShop {
     @Autowired
     private WarehouseRepository warehouseRepository;
@@ -67,6 +67,7 @@ public class WarehouseShop {
                        Locale locale){
         Delivery delivery = deliveryShopInterface.findById(id);
         ItemsDelivery itemsDelivery = new ItemsDelivery();
+        itemsDelivery.setDelivery(delivery);
         List<Product>products = productRepository.findall();
         model.addAttribute("itemdelivery",itemsDelivery);
         model.addAttribute("delivery",delivery);
@@ -75,20 +76,14 @@ public class WarehouseShop {
                 messageSource.getMessage("text.warehouseShop.document.document.title",null,locale));
         return "warehouseShop/document/document";
     }
-    @RequestMapping(value = "/warehouseShop/document/{id}",method = RequestMethod.POST)
-    public String saveItem(@PathVariable("id")Long id,
-                       Model model,
+    @RequestMapping(value = "/warehouseShop/document/addItem",method = RequestMethod.POST)
+    public String saveItem(Model model,
                        Locale locale,@ModelAttribute("itemdelivery") ItemsDelivery itemsDelivery) {
+Delivery delivery = itemsDelivery.getDelivery();
+delivery.addItemsDelivery(itemsDelivery);
+      deliveryShopInterface.merge(delivery);
 
-        Delivery delivery = deliveryShopInterface.findById(id);
-       List<ItemsDelivery> itemsDeliveries =delivery.getItemdeliveries();
-       itemsDelivery.setDelivery(delivery);
-       itemsDeliveries.add(itemsDelivery);
-       model.addAttribute("item",itemsDeliveries);
-       ///delivery.setItemdeliveries(itemsDeliveries);
-      // deliveryShopInterface.merge(delivery);
-
-        return "warehouseShop/document/"+delivery.getId();
+        return "redirect:/warehouseShop/document/"+delivery.getId();
     }
 
     @RequestMapping(value = "/warehouseShop/document/delete/{id}")

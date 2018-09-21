@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
+@SessionAttributes("itemdelivery")
 public class WarehouseMain {
     @Autowired
     private WarehouseRepository warehouseRepository;
@@ -57,17 +58,7 @@ public class WarehouseMain {
 
         return "warehouseMain/document/documents";
     }
-    @RequestMapping(value = "/warehouseMain/document/{id}")
-    public String find(@PathVariable("id")Long id,
-                       Model model,
-                       Locale locale){
-        Delivery delivery = deliveryMainInterface.findById(id);
 
-        model.addAttribute("delivery",delivery);
-        model.addAttribute("title",
-                messageSource.getMessage("text.warehouseMain.document.document.title",null,locale));
-        return "warehouseMain/document/document";
-    }
     @RequestMapping(value = "/warehouseMain/document/delete/{id}")
     public String delete(@PathVariable("id")Long id,
                          RedirectAttributes flash,
@@ -117,5 +108,30 @@ public class WarehouseMain {
         model.addAttribute("title",
                 messageSource.getMessage("text.warehouseMain.document.success.save", null, locale));
         return "redirect:/warehouseMain/document/"+ delivery.getId();
+    }
+    @RequestMapping(value = "/warehouseMain/document/{id}")
+    public String createItemDelivery(@PathVariable("id")Long id,
+                                     Model model,
+                                     Locale locale){
+        Delivery delivery = deliveryMainInterface.findById(id);
+        ItemsDelivery itemsDelivery = new ItemsDelivery();
+        itemsDelivery.setDelivery(delivery);
+        List<Product>products = productRepository.findall();
+        model.addAttribute("itemdelivery",itemsDelivery);
+        model.addAttribute("delivery",delivery);
+        model.addAttribute("products",products);
+                model.addAttribute("title",
+                        messageSource.getMessage("text.warehouseMain.document.document.title",null,locale));
+
+                return "warehouseMain/document/document";
+    }
+    @RequestMapping(value = "/warehouseMain/document/addItem",method = RequestMethod.POST)
+    public String saveItem(Model model,
+                           Locale locale,@ModelAttribute("itemdelivery") ItemsDelivery itemsDelivery) {
+        Delivery delivery = itemsDelivery.getDelivery();
+        delivery.addItemsDelivery(itemsDelivery);
+        deliveryMainInterface.merge(delivery);
+
+        return "redirect:/warehouseMain/document/"+delivery.getId();
     }
     }

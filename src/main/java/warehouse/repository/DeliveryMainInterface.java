@@ -9,5 +9,6 @@ public interface DeliveryMainInterface {
     List<Delivery> findAll();
     void delete(Delivery delivery);
     Delivery findById(Long id);
+    void merge (Delivery delivery);
 
 }
