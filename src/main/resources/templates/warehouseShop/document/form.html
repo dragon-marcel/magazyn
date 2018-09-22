@@ -6,14 +6,14 @@
 <div th:replace="layout/Layout :: navbar"/>
 <div th:replace="layout/Layout :: info"/>
 <div class="container">
-    <div class="row">
+    <div class="row justify-content-md-center">
         <div th:replace="layout/Layout :: navShop"/>
         <!-FORM USER-!>
         <div class="col-12">
 
             <br>
             <div class="col-12">
-                <table class="table table-hover table-bordered text-center">
+                <table id="table" class="table table-hover table-bordered text-center">
                     <thead class="thead-light">
                     <tr>
                         <th colspan="12" style="text-align: center;"> <h2>NOWY DOKUMENT</h2> </th>
@@ -43,17 +43,13 @@
                                         th:text="${document.name}"></option>
                             </select></td>
                             <td><button type="submit" class="btn btn-secondary float-right" >
-                                <label>ZAPISZ</label>
+                                <label th:text="#{text.user.users.save}"/>
                             </button></td>
-
                         </tr>
                     </form>
-
                     </tbody>
                 </table>
             </div>
-
-        <div class="col-12">
         </div>
     </div>
 </div>

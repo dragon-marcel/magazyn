@@ -12,6 +12,8 @@ public class Warehouse {
     private String name;
     @OneToMany(mappedBy = "warehouse")
     private List<Delivery> delivery;
+    @OneToOne
+    private StateProducts stateProducts;
 
 
     public Warehouse() {
@@ -43,12 +45,21 @@ public class Warehouse {
         this.delivery = delivery;
     }
 
+    public StateProducts getStateProducts() {
+        return stateProducts;
+    }
+
+    public void setStateProducts(StateProducts stateProducts) {
+        this.stateProducts = stateProducts;
+    }
+
     @Override
     public String toString() {
         return "Warehouse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", delivery=" + delivery +
+                ", stateProducts=" + stateProducts +
                 '}';
     }
 }

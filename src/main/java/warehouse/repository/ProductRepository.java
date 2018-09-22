@@ -42,5 +42,10 @@ public class ProductRepository implements ProductInterface {
         return  null;
     }
 
+    @Override
+    public List<Product> findProductByName(String term) {
+        return productDAO.findProductByName(term);
+    }
+
 
 }

@@ -34,8 +34,8 @@ public class DeliveryMainShopRepository implements DeliveryShopInterface {
 
         if(delivery.getDocument().getId() == 1){
             Delivery delivery1 = new Delivery();
-            Warehouse warehouse  = (Warehouse)em.createQuery("select w from Warehouse w where id ='1'").getSingleResult();
-            Document document = (Document)em.createQuery("select d from Document d where id = 2").getSingleResult();
+            Warehouse warehouse  = em.find(Warehouse.class,1L);
+            Document document = em.find(Document.class,2L);
             delivery1.setWarehouse(warehouse);
             delivery1.setNameUser(nameUser);
             delivery1.setDocument(document);
@@ -53,16 +53,17 @@ public class DeliveryMainShopRepository implements DeliveryShopInterface {
     @Override
     @Transactional
     public void delete(Delivery delivery) {
-
-        Delivery deliveryFist = delivery;
-        Delivery deliverySecond = delivery.getDelivery();
-        if (deliverySecond.getId() == null){
-            em.remove(deliveryFist);
-
-        }else{
-            em.remove(deliveryFist);
-            em.remove(deliverySecond);
-        }}
+em.remove(delivery);
+//        Delivery deliveryFist = delivery;
+//        Delivery deliverySecond = delivery.getDelivery();
+//        if (deliverySecond.getId() == null){
+//            em.remove(deliveryFist);
+//
+//        }else{
+//            em.remove(deliveryFist);
+//            em.remove(deliverySecond);
+//        }
+    }
     @Override
     public Delivery findById(Long id) {
 

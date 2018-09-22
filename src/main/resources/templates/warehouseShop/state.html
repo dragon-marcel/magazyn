@@ -5,10 +5,32 @@
 <body>
 <div th:replace="layout/Layout :: navbar"/>
 <div th:replace="layout/Layout :: info"/>
-<div class="container">
-    <div class="row">
+<div class="container ">
+    <div class="row justify-content-md-center">
         <div th:replace="layout/Layout :: navShop"/>
+        <div class="col-8">
+            <table class="table table-bordered text-center ">
+                <thead class="thead-light ">
+                <tr>
+                    <th colspan="6"> <h2>LISTA PRODUKTÓW</h2> </th>
+                </tr>
+                <tr>
+                    <th>LP</th>
+                    <th>NAZWA</th>
+                    <th>ILOŚĆ</th>
 
+                </tr>
+                </thead>
+                <tbody th:each="state,lp:${stateProducts}">
+                <tr>
+                    <td th:text="${lp.count}">1</td>
+                    <td th:text="${state.product.name}"></td>
+                    <td th:text="${state.quantity}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
         <div class="col-12">
         </div>

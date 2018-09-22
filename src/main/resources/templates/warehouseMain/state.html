@@ -5,38 +5,36 @@
 <body>
 <div th:replace="layout/Layout :: navbar"/>
 <div th:replace="layout/Layout :: info"/>
-<div class="container">
-    <div class="row">
-        <div th:replace="layout/Layout :: navMain"/>
-
-        <div class="col-12">
-            <table class="table table-bordered text-center">
-                <thead class="thead-light">
+<div class="container ">
+    <div class="row justify-content-md-center">
+        <div th:replace="layout/Layout :: navShop"/>
+        <div class="col-8 i-am-centered">
+            <table id="table" class="table table-bordered text-center ">
+                <thead class="thead-light ">
                 <tr>
-                    <th colspan="13" style="text-align: center;"> <h2>STAN MAGAZYNU GŁÓWNEGO</h2> </th>
+                    <th colspan="6"> <h2>LISTA PRODUKTÓW</h2> </th>
                 </tr>
                 <tr>
                     <th>LP</th>
-                    <th>ID</th>
-                    <th>PRODUKT</th>
-                    <th>QUANTITY</th>
+                    <th>NAZWA</th>
+                    <th>ILOŚĆ</th>
 
                 </tr>
                 </thead>
-                <tbody th:each="delivery:${delivery}">
+                <tbody th:each="state,lp:${stateProducts}">
                 <tr>
-                    <td th:text="${delivery.id}"></td>
-                    <td th:text="${delivery.description }"></td>
-                    <td th:text="${delivery.document.name }"></td>
-                    <td th:text="${delivery.date}"></td>
-                    <td th:text="${delivery.nameUser}"></td>
-                    <td> <a th:href="${'/warehouseShop/document/delete/'+ delivery.id}" class="text-danger">X</a> </td>
+                    <td th:text="${lp.count}">1</td>
+                    <td th:text="${state.product.name}"></td>
+                    <td th:text="${state.quantity}"></td>
                 </tr>
                 </tbody>
             </table>
-        </div>        <div class="col-12">
         </div>
     </div>
+
+    <div class="col-12">
+    </div>
+</div>
 </div>
 <footer th:replace="layout/layout::footer"/>
 </body>

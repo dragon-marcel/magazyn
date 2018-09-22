@@ -12,4 +12,5 @@ public interface ProductInterface {
     void delete(Product product);
     Product find(Long id);
     List<Product>productWarehouseMain();
+    List<Product>findProductByName(String term);
 }

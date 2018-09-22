@@ -76,5 +76,11 @@ public class ProductController {
                 messageSource.getMessage("text.product.products.successDelete",null,locale));
         return "redirect:/products";
     }
+    @GetMapping(value = "/load-product/{term}",produces = {"application/json"})
+    public @ResponseBody List<Product> searchProduct(@PathVariable String term){
+
+        return productRepository.findProductByName(term);
+    }
+
 
 }
