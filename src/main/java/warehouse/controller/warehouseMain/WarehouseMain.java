@@ -48,7 +48,7 @@ public class WarehouseMain {
         return "warehouseMain/state";
     }
     @RequestMapping(value = "/warehouseMain/document")
-    public String findlAll(@RequestParam(value = "sort",required = false)String sort,
+    public String findlAllDocuments(@RequestParam(value = "sort",required = false)String sort,
                            Model model,
                            Locale locale){
         List<Delivery> deliveries =deliveryService.sortedDelivery(1L,sort);
@@ -58,9 +58,24 @@ public class WarehouseMain {
 
         return "warehouseMain/document/documents";
     }
+    @RequestMapping(value = "/warehouseMain/document/{id}")
+    public String findDocumentByID(@PathVariable("id")Long id,
+                       Model model,
+                       Locale locale){
+        Delivery delivery = deliveryMainInterface.findById(id);
+        ItemsDelivery itemsDelivery = new ItemsDelivery();
+        itemsDelivery.setDelivery(delivery);
+        List<Product>products = productRepository.findall();
+        model.addAttribute("itemdelivery",itemsDelivery);
+        model.addAttribute("delivery",delivery);
+        model.addAttribute("products",products);
+        model.addAttribute("title",
+                messageSource.getMessage("text.warehouseMain.document.document.title",null,locale));
+        return "warehouseMain/document/document";
+    }
 
     @RequestMapping(value = "/warehouseMain/document/delete/{id}")
-    public String delete(@PathVariable("id")Long id,
+    public String deleteDocument(@PathVariable("id")Long id,
                          RedirectAttributes flash,
                          Locale locale) {
 
@@ -77,8 +92,9 @@ public class WarehouseMain {
 
         return "redirect:/warehouseMain/document";
     }
+    //NEW DOCUMENT//
     @RequestMapping(value = "/warehouseMain/document/form")
-    public String create(Model model,
+    public String createDocument(Model model,
                          Locale locale
                         ){
         Warehouse warehouse =warehouseRepository.findOnebyId(1L);
@@ -92,7 +108,7 @@ public class WarehouseMain {
         return "warehouseMain/document/form";
     }
     @RequestMapping(value = "/warehouseMain/document/form",method = RequestMethod.POST)
-    public String create(@ModelAttribute("newDelivery") Delivery delivery,
+    public String saveDocument(@ModelAttribute("newDelivery") Delivery delivery,
                          Model model,
                          RedirectAttributes flash,
                          Locale locale) throws Exception {
@@ -107,10 +123,12 @@ public class WarehouseMain {
         }
         model.addAttribute("title",
                 messageSource.getMessage("text.warehouseMain.document.success.save", null, locale));
-        return "redirect:/warehouseMain/document/"+ delivery.getId();
+        return "redirect:/warehouseMain/document/form/"+ delivery.getId();
     }
-    @RequestMapping(value = "/warehouseMain/document/{id}")
-    public String createItemDelivery(@PathVariable("id")Long id,
+
+    //NEW ITEM DOCUMENT//
+    @RequestMapping(value = "/warehouseMain/document/form/{id}")
+    public String createItemDocument(@PathVariable("id")Long id,
                                      Model model,
                                      Locale locale){
         Delivery delivery = deliveryMainInterface.findById(id);
@@ -123,15 +141,14 @@ public class WarehouseMain {
                 model.addAttribute("title",
                         messageSource.getMessage("text.warehouseMain.document.document.title",null,locale));
 
-                return "warehouseMain/document/document";
+                return "warehouseMain/document/documentItemsform";
     }
-    @RequestMapping(value = "/warehouseMain/document/addItem",method = RequestMethod.POST)
-    public String saveItem(Model model,
-                           Locale locale,@ModelAttribute("itemdelivery") ItemsDelivery itemsDelivery) {
+    @RequestMapping(value = "/warehouseMain/document/form/addItem",method = RequestMethod.POST)
+    public String saveItemDocument(@ModelAttribute("itemdelivery") ItemsDelivery itemsDelivery){
         Delivery delivery = itemsDelivery.getDelivery();
         delivery.addItemsDelivery(itemsDelivery);
         deliveryMainInterface.merge(delivery);
 
-        return "redirect:/warehouseMain/document/"+delivery.getId();
+        return "redirect:/warehouseMain/document/form/"+delivery.getId();
     }
     }
