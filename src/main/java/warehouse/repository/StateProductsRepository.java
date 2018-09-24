@@ -5,11 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.core.EntityMetadata;
 import org.springframework.stereotype.Repository;
 import warehouse.dao.StateProductsDAO;
+import warehouse.entity.Product;
 import warehouse.entity.StateProducts;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import java.util.List;
 @Repository
 public class StateProductsRepository implements StateProductsInterface{
@@ -26,5 +25,23 @@ public class StateProductsRepository implements StateProductsInterface{
                         setParameter("id",id).getResultList();
 
         return stateProducts;
+    }
+    @Override
+    public void subtractFromStateProducts(Product product, Long quantity, Long warehouseID) {
+        List<StateProducts> stateProducts = findAllStateProductsbyWarehouse(warehouseID);
+            stateProducts.stream()
+                    .filter(a->a.getProduct().equals(product))
+                    .filter(a->{
+                        if(a.getQuantity() < quantity ){
+                            throw new NullPointerException();
+                        } return true;}
+                        ).forEach(a->a.setQuantity(a.getQuantity() - quantity));
+
+    }
+    @Override
+    public void addtoStateProducts(Product product, Long quantity, Long warehouseID) {
+        List<StateProducts> stateProducts = findAllStateProductsbyWarehouse(warehouseID);
+        stateProducts.stream().filter(a -> a.getProduct().equals(product)).
+                forEach(a -> a.setQuantity(a.getQuantity() + quantity));
     }
 }

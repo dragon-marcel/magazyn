@@ -6,19 +6,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import warehouse.dao.DeliveryDAO;
-import warehouse.entity.Delivery;
-import warehouse.entity.Document;
-import warehouse.entity.ItemsDelivery;
-import warehouse.entity.Warehouse;
+import warehouse.entity.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import java.util.List;
 @Repository
-public class DeliveryMainMainRepository implements DeliveryMainInterface {
+public class DeliveryMainRepository implements DeliveryMainInterface {
     @Autowired
     private DeliveryDAO deliveryDAO;
+    @Autowired
+    private StateProductsRepository stateProductsRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -47,25 +46,12 @@ public class DeliveryMainMainRepository implements DeliveryMainInterface {
          delivery1.setDelivery(delivery);
          delivery.setDelivery(delivery1);
          em.persist(delivery1);}}
-    @Override
-    public List<Delivery> findAll() {
-       List<Delivery>deliveries =(List<Delivery>)deliveryDAO.findAll();
-        return deliveries;
-    }
 
     @Override
     @Transactional
-    public void delete(Delivery delivery) {
-        Delivery deliveryFist = delivery;
-        Delivery deliverySecond = delivery.getDelivery();
-        if (deliverySecond.getId() == null){
-            em.remove(deliveryFist);
-
-        }else{
-            em.remove(deliveryFist);
-            em.remove(deliverySecond);
-        }}
-
+    public void delete(Delivery document) {
+    em.remove(document);
+    }
     @Override
     public Delivery findById(Long id) {
         return deliveryDAO.findById(id).orElse(null);
@@ -74,10 +60,21 @@ public class DeliveryMainMainRepository implements DeliveryMainInterface {
     @Override
     @Transactional
     public void merge(Delivery delivery) {
-        List<ItemsDelivery>deliveries = delivery.getItemdeliveries();
-        Delivery deliverySecond = delivery.getDelivery();
-        deliverySecond.setItemdeliveries(deliveries);
+        List<ItemsDelivery>itemsDeliveries =delivery.getItemdeliveries();
+
+if (delivery.getDocument().getId() == 3){
+            for(int a = 0 ;a< itemsDeliveries.size();a++){
+                stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(),1L);
+                em.merge(delivery);
+
+            }}
+        else {
+    for(int a = 0 ; a < itemsDeliveries.size();a++){
+        stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
+                itemsDeliveries.get(a).getQuantity(),1L);
         em.merge(delivery);
-        em.merge(deliveries);
+
     }
-}
+
+    }}}

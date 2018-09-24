@@ -6,17 +6,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import warehouse.dao.DeliveryDAO;
-import warehouse.entity.Delivery;
-import warehouse.entity.Document;
-import warehouse.entity.ItemsDelivery;
-import warehouse.entity.Warehouse;
+import warehouse.entity.*;
 
 import javax.persistence.*;
 import java.util.List;
 @Repository
-public class DeliveryMainShopRepository implements DeliveryShopInterface {
+public class DeliveryShopRepository implements DeliveryShopInterface {
     @Autowired
     private DeliveryDAO deliveryDAO;
+    @Autowired
+    private StateProductsRepository stateProductsRepository;
     @PersistenceContext
     private EntityManager em;
 
@@ -26,6 +25,7 @@ public class DeliveryMainShopRepository implements DeliveryShopInterface {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String nameUser = authentication.getName();
         delivery.setNameUser(nameUser);
+
         em.persist(delivery);
 
         if (delivery.getDocument().getId() == 3 ||delivery.getDocument().getId() == 2) {
@@ -44,25 +44,30 @@ public class DeliveryMainShopRepository implements DeliveryShopInterface {
             delivery1.setDelivery(delivery);
             em.persist(delivery1);
     } }
-
-    @Override
-    public List<Delivery> findA() {
-        return null;
-    }
-
     @Override
     @Transactional
-    public void delete(Delivery delivery) {
-em.remove(delivery);
-//        Delivery deliveryFist = delivery;
-//        Delivery deliverySecond = delivery.getDelivery();
-//        if (deliverySecond.getId() == null){
-//            em.remove(deliveryFist);
-//
-//        }else{
-//            em.remove(deliveryFist);
-//            em.remove(deliverySecond);
-//        }
+    public void delete(Delivery document) {
+        List<ItemsDelivery> itemsDeliveries = document.getItemdeliveries();
+
+        if(document.getDocument().getId() == 3 || document.getDocument().getId() == 2){
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 2L);
+                em.remove(document);
+
+            }
+        }
+        else{
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 2L);
+                em.remove(document);
+
+            }
+            em.merge(document);
+            em.remove(document);
+
+        }
     }
     @Override
     public Delivery findById(Long id) {
@@ -73,10 +78,22 @@ em.remove(delivery);
     @Override
     @Transactional
     public void merge(Delivery delivery) {
-       List<ItemsDelivery>deliveries = delivery.getItemdeliveries();
-       Delivery deliverySecond = delivery.getDelivery();
-       deliverySecond.setItemdeliveries(deliveries);
-        em.merge(delivery);
-        em.merge(deliveries);
-    }
-}
+        List<ItemsDelivery> itemsDeliveries = delivery.getItemdeliveries();
+        if(delivery.getDocument().getId() == 3 || delivery.getDocument().getId() == 2){
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 2L);
+                em.merge(delivery);
+
+            }
+        }
+        else{
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 2L);
+                em.merge(delivery);
+
+            }
+
+        }
+    }}

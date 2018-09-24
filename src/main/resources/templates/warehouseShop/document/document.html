@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="layout/Layout :: head"/>
+<head th:replace="layout/Layout :: head"/>
 <body>
 <div th:replace="layout/Layout :: navbar"/>
 <div th:replace="layout/Layout :: info"/>
 <div class="container">
     <div class="row justify-content-md-center">
         <div class="col-12">
-
             <table class="table table-bordered text-center">
                 <thead class="thead-light">
                 <tr>
@@ -28,50 +27,38 @@
                     <td th:text="${delivery.description }"></td>
                     <td th:text="${delivery.date}"></td>
                     <td th:text="${delivery.nameUser}"></td>
-                    <td> <a th:href="${'/warehouseShop/document/delete/'+ delivery.id}" class="text-danger">X</a> </td>
                 </tr>
                 </tbody>
             </table>
-
-            <table class="table table-bordered text-center">
+        </div>
+        <div class="col-12">
+            <div class="alert alert-info" th:if="${#lists.isEmpty(delivery.itemdeliveries)}">
+                Brak porduktów w dokumencie.
+            </div>
+            <table th:if="${not #lists.isEmpty(delivery.itemdeliveries ) }" class="table table-bordered text-center">
                 <thead class="thead-light">
                 <tr>
-                    <th colspan="13" style="text-align: center;"> <h2>NOWE PRODUKTY</h2> </th>
-                </tr>
-                </thead>
-
-            </div>
-            <table th:replace="warehouseShop/document/documentItems :: documentItems"/>
-            <table id="ItemDocuments" class="table  table-hover table-bordered text-center">
-                <div class="form-group row">
-                    <label for="search-product" class="col-sm-2 col-form-label">SZUKAJ PRODUKTU</label>
-                    <div class="col-sm-6">
-                        <input th:type="text" name="search-product" id="search-product" class="form-control"/>
-                    </div>
-                <thead>
-                <tr>
-                    <th></th>
-                    <th >NAZWA</th>
+                    <th>LP</th>
+                    <th>NAZWA</th>
                     <th>ILOŚĆ</th>
-                    <th>USUŃ</th>
+                    <th>CENA</th>
+                    <th>WARTOŚĆ</th>
                 </tr>
                 </thead>
-                <tbody>
-
+                <tbody th:each="item,lp:${delivery.itemdeliveries}">
+                <tr>
+                    <td th:text="${lp.count}">1</td>
+                    <td th:text="${item.product.name}"></td>
+                    <td th:text="${item.quantity}"></td>
+                    <td th:text="${item.product.price}"></td>
+                    <td th:text="${item.getTotalPrice()}"> </td>
+                </tr>
                 </tbody>
-            </table>
-            <h5>
-                <label>WARTOść</label>
-                <span class="badge badge-secondary" id="totalPrice">0</span>
-            </h5>
-            <button th:type="submit" class="btn btn-success float-right">DODAJ</button>
-            </form>
             </table>
         </div>
     </div>
-</div>
-
+</div></div></div></div>
 <footer th:replace="layout/layout::footer"/>
-    <script th:replace="product/js/search-product :: javascript"></script>
+
 </body>
 </html>

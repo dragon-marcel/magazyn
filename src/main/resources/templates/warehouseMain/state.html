@@ -7,7 +7,7 @@
 <div th:replace="layout/Layout :: info"/>
 <div class="container ">
     <div class="row justify-content-md-center">
-        <div th:replace="layout/Layout :: navShop"/>
+        <div th:replace="layout/Layout :: navMain"/>
         <div class="col-8 i-am-centered">
             <table id="table" class="table table-bordered text-center ">
                 <thead class="thead-light ">
@@ -18,7 +18,6 @@
                     <th>LP</th>
                     <th>NAZWA</th>
                     <th>ILOŚĆ</th>
-
                 </tr>
                 </thead>
                 <tbody th:each="state,lp:${stateProducts}">
@@ -31,7 +30,6 @@
             </table>
         </div>
     </div>
-
     <div class="col-12">
     </div>
 </div>

@@ -1,6 +1,7 @@
 package warehouse.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 
@@ -13,15 +14,9 @@ public class ItemsDelivery {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
-    private int quantity;
-    @ManyToOne(cascade = CascadeType.ALL)
+    private Long quantity;
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Delivery delivery;
-
-    public ItemsDelivery(Product product, int quantity, Delivery delivery) {
-        this.product = product;
-        this.quantity = quantity;
-        this.delivery = delivery;
-    }
 
     public ItemsDelivery() {
     }
@@ -42,11 +37,11 @@ public class ItemsDelivery {
         this.product = product;
     }
 
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 

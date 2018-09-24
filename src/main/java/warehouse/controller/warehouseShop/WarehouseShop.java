@@ -10,15 +10,12 @@ import warehouse.entity.*;
 import warehouse.repository.*;
 import warehouse.service.DeliveryService;
 
-import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceException;
-import javax.transaction.TransactionalException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 @Controller
-@SessionAttributes(names = "itemdelivery")
+@SessionAttributes("itemDocument")
 public class WarehouseShop {
     @Autowired
     private WarehouseRepository warehouseRepository;
@@ -29,85 +26,61 @@ public class WarehouseShop {
     @Autowired
     private DeliveryService deliveryService;
     @Autowired
-    private DeliveryMainShopRepository deliveryShopInterface;
+    private DeliveryShopRepository deliveryShopInterface;
     @Autowired
     private ProductRepository productRepository;
 
-    @RequestMapping(value = "/warehouseShop")
-    public String findall(Model model,
-                          Locale locale){
-        Warehouse warehouse = warehouseRepository.findOnebyId(2L);
-
-        model.addAttribute("title",
-                messageSource.getMessage("text.warehouseShop.index.title",null,locale));
-        return "warehouseShop/warehouseShop";
-    }
-    @RequestMapping(value = "/warehouseShop/state")
-    public String findAll(Model model,
-                          Locale locale){
-
-        model.addAttribute("title",
-                messageSource.getMessage("text.warehouseShop.state.title",null,locale));
-        return "warehouseShop/state";
-    }
-    @RequestMapping(value = "/warehouseShop/document")
-    public String findlAll(@RequestParam(value = "sort",required = false)String sort,
+    @RequestMapping(value = "/warehouseShop/documents")
+    public String findlAllDocuments(@RequestParam(value = "sort",required = false)String sort,
                            Model model,
                            Locale locale){
-        List<Delivery> deliveries =deliveryService.sortedDelivery(2L,sort);
-        model.addAttribute("deliveries",deliveries);
+        List<Delivery> documents =deliveryService.sortedDelivery(2L,sort);
 
+        model.addAttribute("deliveries",documents);
         model.addAttribute("title",
                 messageSource.getMessage("text.warehouseShop.document.documents.title",null,locale));
+
         return "warehouseShop/document/documents";
     }
     @RequestMapping(value = "/warehouseShop/document/{id}")
-    public String find(@PathVariable("id")Long id,
+    public String findOneDocumentById(@PathVariable("id")Long id,
                        Model model,
                        Locale locale){
         Delivery delivery = deliveryShopInterface.findById(id);
-        ItemsDelivery itemsDelivery = new ItemsDelivery();
-        itemsDelivery.setDelivery(delivery);
+        ItemsDelivery itemDocument = new ItemsDelivery();
+        itemDocument.setDelivery(delivery);
         List<Product>products = productRepository.findall();
-        model.addAttribute("itemdelivery",itemsDelivery);
+        model.addAttribute("itemDocument",itemDocument);
         model.addAttribute("delivery",delivery);
         model.addAttribute("products",products);
         model.addAttribute("title",
                 messageSource.getMessage("text.warehouseShop.document.document.title",null,locale));
         return "warehouseShop/document/document";
     }
-    @RequestMapping(value = "/warehouseShop/document/addItem",method = RequestMethod.POST)
-    public String saveItem(Model model,
-                       Locale locale,@ModelAttribute("itemdelivery") ItemsDelivery itemsDelivery) {
-Delivery delivery = itemsDelivery.getDelivery();
-delivery.addItemsDelivery(itemsDelivery);
-      deliveryShopInterface.merge(delivery);
-
-        return "redirect:/warehouseShop/document/"+delivery.getId();
-    }
 
     @RequestMapping(value = "/warehouseShop/document/delete/{id}")
-    public String delete(@PathVariable("id")Long id,
+    public String deleteDocument(@PathVariable("id")Long id,
                          RedirectAttributes flash,
                          Locale locale) {
 
-        Delivery delivery = deliveryShopInterface.findById(id);
-        if (delivery == null){
+        Delivery document = deliveryShopInterface.findById(id);
+        if (document == null){
             flash.addFlashAttribute("danger",
                     messageSource.getMessage("text.warehouseShop.document.document.errorDelete", null, locale));
-            return "redirect:/warehouseShop/document";
+            return "redirect:/warehouseShop/documents";
 
         }
-        deliveryShopInterface.delete(delivery);
+        deliveryShopInterface.delete(document);
         flash.addFlashAttribute("success",
                 messageSource.getMessage("text.warehouseShop.document.document.successDelete", null, locale));
 
-        return "redirect:/warehouseShop/document";
+        return "redirect:/warehouseShop/documents";
     }
 
     @RequestMapping(value = "/warehouseShop/document/form")
     public String create(Model model,
-                         Locale locale    ){
+                         Locale locale){
+
         Warehouse warehouse =warehouseRepository.findOnebyId(2L);
         Delivery newDelivery = new Delivery();
         List<Document>documents = documentRepository.findall();
@@ -137,6 +110,43 @@ delivery.addItemsDelivery(itemsDelivery);
                         messageSource.getMessage("text.warehouseShop.document.client.form.title", null, locale));
         model.addAttribute("title",
                 messageSource.getMessage("text.warehouseShop.document.form.title", null, locale));
-        return "redirect:/warehouseShop/document/"+ delivery.getId();
-    }}
+        return "redirect:/warehouseShop/document/form/"+ delivery.getId();
+    }
+
+    @RequestMapping(value = "/warehouseShop/document/form/{id}")
+    public String createItemDelivery(@PathVariable("id")Long id,
+                                     Model model,
+                                     Locale locale){
+        Delivery delivery = deliveryShopInterface.findById(id);
+        ItemsDelivery itemDocument = new ItemsDelivery();
+        itemDocument.setDelivery(delivery);
+        List<Product>products = productRepository.findall();
+        model.addAttribute("itemDocument",itemDocument);
+        model.addAttribute("delivery",delivery);
+        model.addAttribute("products",products);
+        model.addAttribute("title",
+                messageSource.getMessage("text.warehouseShop.document.document.title",null,locale));
+
+        return "warehouseShop/document/documentItemsform";
+    }
+    @RequestMapping(value = "/warehouseShop/document/form/addItem",method = RequestMethod.POST)
+    public String saveItem(@ModelAttribute("itemDocument") ItemsDelivery itemDocument,
+                           RedirectAttributes flash){
+        Delivery delivery = itemDocument.getDelivery();
+        delivery.addItemsDelivery(itemDocument);
+        try {
+            deliveryShopInterface.merge(delivery);
+        }catch (NullPointerException e){
+            flash.addFlashAttribute("danger","Brak lub nie wystarczająca ilość towaru na magazynie");
+            return "redirect:/warehouseShop/document/form/"+delivery.getId();
+        }
+
+        return "redirect:/warehouseShop/document/form/"+delivery.getId();
+}
+    @RequestMapping(value ="warehouseShop/document/edit/{id}")
+    public String editDocument(@PathVariable("id")Long id) {
+
+        return "warehouseShop/document/edit";
+    }
+}
 

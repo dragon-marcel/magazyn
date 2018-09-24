@@ -22,11 +22,11 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item active">
-                    <a class="nav-link active" th:href="@{/warehouseMain/document}" th:text="#{text.navbar.werehouseMain}">
+                    <a class="nav-link active" th:href="@{/warehouseMain/documents}" th:text="#{text.navbar.werehouseMain}">
                         <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link active" th:href="@{/warehouseShop/document}" th:text="#{text.navbar.werehouseShop}">
+                    <a class="nav-link active" th:href="@{/warehouseShop/documents}" th:text="#{text.navbar.werehouseShop}">
                         <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item ">
@@ -60,18 +60,18 @@
             <!--NAV WAREHOUSE MAIN-->
             <div th:fragment="navMain">
             <nav class="nav nav-pills nav-fill pb-2">
-                    <h3><a class="badge badge-secondary"th:href="@{/warehouseMain/stateProducts#table}">STAN MAGAZYNU</a></h3>
-                    <h3><a class="badge badge-secondary" th:href="@{/warehouseMain/document#table}">DOKUMENTY</a></h3>
-                    <h3><a class="badge badge-secondary" th:href="@{/warehouseMain/document/form#table}">NOWY DOKUMENT</a></h3>
+                    <h3><a class="badge badge-secondary"th:href="@{/warehouseMain/stateProducts}">STAN MAGAZYNU</a></h3>
+                    <h3><a class="badge badge-secondary" th:href="@{/warehouseMain/documents}">DOKUMENTY</a></h3>
+                    <h3><a class="badge badge-secondary" th:href="@{/warehouseMain/document/form}">NOWY DOKUMENT</a></h3>
             </nav>
                 <br>
             </div>
             <!--NAV WAREHOUSE MAIN-->
             <div th:fragment="navShop">
                 <nav class="nav nav-pills nav-fill pb-2">
-                        <h3><a class="badge badge-secondary" th:href="@{/warehouseShop/stateProducts#table}">STAN MAGAZYNU</a></h3>
-                       <h3><a class="badge badge-secondary" th:href="@{/warehouseShop/document#table}">DOKUMENTY</a></h3>
-                     <h3><a class="badge badge-secondary" th:href="@{/warehouseShop/document/form#table}">NOWY DOKUMENT</a></h3>
+                        <h3><a class="badge badge-secondary" th:href="@{/warehouseShop/stateProducts}">STAN MAGAZYNU</a></h3>
+                       <h3><a class="badge badge-secondary" th:href="@{/warehouseShop/documents}">DOKUMENTY</a></h3>
+                     <h3><a class="badge badge-secondary" th:href="@{/warehouseShop/document/form}">NOWY DOKUMENT</a></h3>
                 </nav>
                 <br>
             </div>
@@ -84,12 +84,9 @@
     </div>
 <!--FOOTER-->
     <footer th:fragment="footer" class="page-footer font-small bg-dark mt-5">
-
         <div class="text-light text-center py-3 ">Magazyn - Marcel Dragon
         </div>
-        <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
-        <script th:src="@{/js/bootstrap.min.js}"></script>
-        <script th:src="@{/js/jquery-ui.min.js}"></script>
+
     </footer>
 
 </body>

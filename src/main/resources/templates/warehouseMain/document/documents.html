@@ -24,7 +24,6 @@
                     <th></a>EDYTUJ</th>
                     <th>SZCZEGÓŁY</th>
                     <th></a>USUŃ</th>
-
                 </tr>
                 </thead>
                 <tbody th:each="deliveries,lp:${deliveries}">
@@ -36,7 +35,7 @@
                     <td th:text="${deliveries.nameUser}"></td>
                     <td th:if="${deliveries.document.id == 1 or deliveries.document.id == 2}">X</td>
                     <td th:if="${deliveries.document.id == 3 or deliveries.document.id == 4}">
-                        <a th:href="${'/warehouseMain/document/'+ deliveries.id}" class="text-success">
+                        <a th:href="${'/warehouseMain/document/edit/'+ deliveries.id}" class="text-success">
                         <img th:src="@{/img/edit-png.png}" style="width:20px"/></a> </td>
                     <td> <a th:href="${'/warehouseMain/document/'+ deliveries.id}" class="text-success">
                         <img th:src="@{/img/details.png}" style="width:22px"/></a> </td>

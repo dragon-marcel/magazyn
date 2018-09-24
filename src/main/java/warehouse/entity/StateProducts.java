@@ -7,7 +7,7 @@ import java.util.List;
 @Entity
 public class StateProducts {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
     private Product products;
@@ -51,11 +51,19 @@ public class StateProducts {
         this.quantity = quantity;
     }
 
+    public Product getProducts() {
+        return products;
+    }
+
+    public void setProducts(Product products) {
+        this.products = products;
+    }
+
     @Override
     public String toString() {
         return "StateProducts{" +
                 "id=" + id +
-                ", product=" + products +
+                ", products=" + products +
                 ", quantity=" + quantity +
                 ", warehouse=" + warehouse +
                 '}';

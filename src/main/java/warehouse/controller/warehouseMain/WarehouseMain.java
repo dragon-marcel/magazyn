@@ -1,7 +1,6 @@
 package warehouse.controller.warehouseMain;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
-@SessionAttributes("itemdelivery")
+@SessionAttributes("itemDocument")
 public class WarehouseMain {
     @Autowired
     private WarehouseRepository warehouseRepository;
@@ -30,24 +29,8 @@ public class WarehouseMain {
     private DocumentRepository documentRepository;
     @Autowired
     private ProductRepository productRepository;
-    @RequestMapping(value = "/warehouseMain")
-    public String findall(Model model,
-                          Locale locale){
-        Warehouse warehouse = warehouseRepository.findOnebyId(1L);
-        model.addAttribute("title",
-                messageSource.getMessage("text.warehouseMain.index.title",null,locale));
-        return "warehouseMain/warehouseMain";
-    }
-    @RequestMapping(value = "/warehouseMain/state")
-    public String findAll(Model model,
-                          Locale locale){
-        List<Product>state = productRepository.productWarehouseMain();
-        model.addAttribute("state",state);
-        model.addAttribute("title",
-                messageSource.getMessage("text.warehouseMain.state.title",null,locale));
-        return "warehouseMain/state";
-    }
-    @RequestMapping(value = "/warehouseMain/document")
+
+    @RequestMapping(value = "/warehouseMain/documents")
     public String findlAllDocuments(@RequestParam(value = "sort",required = false)String sort,
                            Model model,
                            Locale locale){
@@ -58,19 +41,21 @@ public class WarehouseMain {
 
         return "warehouseMain/document/documents";
     }
+
     @RequestMapping(value = "/warehouseMain/document/{id}")
-    public String findDocumentByID(@PathVariable("id")Long id,
+    public String findDocumentById(@PathVariable("id")Long id,
                        Model model,
                        Locale locale){
-        Delivery delivery = deliveryMainInterface.findById(id);
-        ItemsDelivery itemsDelivery = new ItemsDelivery();
-        itemsDelivery.setDelivery(delivery);
+        Delivery document = deliveryMainInterface.findById(id);
+        ItemsDelivery itemDocument = new ItemsDelivery();
         List<Product>products = productRepository.findall();
-        model.addAttribute("itemdelivery",itemsDelivery);
-        model.addAttribute("delivery",delivery);
+
+        model.addAttribute("itemDocument",itemDocument);
+        model.addAttribute("delivery",document);
         model.addAttribute("products",products);
         model.addAttribute("title",
                 messageSource.getMessage("text.warehouseMain.document.document.title",null,locale));
+
         return "warehouseMain/document/document";
     }
 
@@ -79,20 +64,21 @@ public class WarehouseMain {
                          RedirectAttributes flash,
                          Locale locale) {
 
-        Delivery delivery = deliveryMainInterface.findById(id);
-        if (delivery == null){
+        Delivery document = deliveryMainInterface.findById(id);
+        if (document == null){
             flash.addFlashAttribute("danger",
                     messageSource.getMessage("text.warehouseMain.document.document.errorDelete", null, locale));
-            return "redirect:/warehouseMain/document";
+            return "redirect:/warehouseMain/documents";
         }
-        deliveryMainInterface.delete(delivery);
+        deliveryMainInterface.delete(document);
 
         flash.addFlashAttribute("success",
                 messageSource.getMessage("text.warehouseMain.document.document.successDelete", null, locale));
 
-        return "redirect:/warehouseMain/document";
+        return "redirect:/warehouseMain/documents";
     }
-    //NEW DOCUMENT//
+
+
     @RequestMapping(value = "/warehouseMain/document/form")
     public String createDocument(Model model,
                          Locale locale
@@ -132,23 +118,41 @@ public class WarehouseMain {
                                      Model model,
                                      Locale locale){
         Delivery delivery = deliveryMainInterface.findById(id);
-        ItemsDelivery itemsDelivery = new ItemsDelivery();
-        itemsDelivery.setDelivery(delivery);
+
+
+        ItemsDelivery itemDocument = new ItemsDelivery();
+        itemDocument.setDelivery(delivery);
         List<Product>products = productRepository.findall();
-        model.addAttribute("itemdelivery",itemsDelivery);
+        model.addAttribute("itemDocument",itemDocument);
         model.addAttribute("delivery",delivery);
         model.addAttribute("products",products);
                 model.addAttribute("title",
+
                         messageSource.getMessage("text.warehouseMain.document.document.title",null,locale));
 
                 return "warehouseMain/document/documentItemsform";
     }
-    @RequestMapping(value = "/warehouseMain/document/form/addItem",method = RequestMethod.POST)
-    public String saveItemDocument(@ModelAttribute("itemdelivery") ItemsDelivery itemsDelivery){
-        Delivery delivery = itemsDelivery.getDelivery();
-        delivery.addItemsDelivery(itemsDelivery);
-        deliveryMainInterface.merge(delivery);
 
+    @RequestMapping(value = "/warehouseMain/document/form/addItem",method = RequestMethod.POST)
+    public String saveItemDocument(@ModelAttribute("itemDocument") ItemsDelivery itemDocument,
+                                   RedirectAttributes flash){
+        Delivery delivery = itemDocument.getDelivery();
+        delivery.addItemsDelivery(itemDocument);
+        try {
+            deliveryMainInterface.merge(delivery);
+        }catch (NullPointerException e){
+
+            flash.addFlashAttribute("danger","Brak lub nie wystarczająca ilość towaru na magazynie");
+
+            return "redirect:/warehouseMain/document/form/"+delivery.getId();
+        }
         return "redirect:/warehouseMain/document/form/"+delivery.getId();
     }
+
+    @RequestMapping(value ="warehouseMain/document/edit/{id}")
+        public String editDocument(@PathVariable("id")Long id) {
+
+         return "warehouseMain/document/edit";
     }
+    }
+

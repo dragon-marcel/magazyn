@@ -10,9 +10,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "name")
     private String name;
-    @Column(name = "price")
     private double price;
     public Product() {
     }

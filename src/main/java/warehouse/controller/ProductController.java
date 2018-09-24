@@ -20,7 +20,7 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @RequestMapping(value = "/products")
-    public String findall(Model model,
+    public String findallProducts(Model model,
                           Locale locale){
         Product product = new Product();
         List<Product> products = productRepository.findall();
@@ -33,22 +33,9 @@ public class ProductController {
         model.addAttribute("products",products);
         return "product/products";
     }
-    @RequestMapping(value = "/product/edit/{id}")
-    public String edit(@PathVariable("id")long id,
-                       Model model,
-                       Locale locale) {
-       Product product = productRepository.find(id);
-        List<Product> products = productRepository.findall();
-        model.addAttribute("products",products);
-        model.addAttribute("title", messageSource.getMessage("text.product.products.editTitle",null,locale));
-        model.addAttribute("newProduct",product);
-       model.addAttribute("cartTitle",
-               messageSource.getMessage("text.product.products.cardTitleEdit",null,locale));
 
-        return "/product/products";
-    }
     @RequestMapping(value = "/products",method = RequestMethod.POST)
-    public String save(@ModelAttribute("newProduct") Product product,
+    public String saveProduct(@ModelAttribute("newProduct") Product product,
                        Locale locale,RedirectAttributes redirectAttribute) {
         if (product.getId() == null) {
             redirectAttribute.addFlashAttribute("success",
@@ -62,25 +49,4 @@ public class ProductController {
             return "redirect:/products";
 
     }
-    @RequestMapping(value = "/product")
-    public String delete(@RequestParam(value = "delete")Long id,
-                         RedirectAttributes redirectAttribute,
-                         Locale locale) {
-        Product product = productRepository.find(id);
-        productRepository.delete(product);
-        if (product == null){
-            redirectAttribute.addFlashAttribute("error",
-                    messageSource.getMessage("text.product.products.ErrorDelete",null,locale));
-        }
-        redirectAttribute.addFlashAttribute("success",
-                messageSource.getMessage("text.product.products.successDelete",null,locale));
-        return "redirect:/products";
-    }
-    @GetMapping(value = "/load-product/{term}",produces = {"application/json"})
-    public @ResponseBody List<Product> searchProduct(@PathVariable String term){
-
-        return productRepository.findProductByName(term);
-    }
-
-
-}
+   }

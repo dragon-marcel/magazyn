@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import warehouse.entity.Delivery;
 import warehouse.entity.ItemsDelivery;
-import warehouse.repository.DeliveryMainMainRepository;
+import warehouse.repository.DeliveryMainRepository;
 import warehouse.repository.WarehouseRepository;
 
 import java.util.Comparator;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class DeliveryService {
     @Autowired
-    private DeliveryMainMainRepository deliveryMainRepository;
+    private DeliveryMainRepository deliveryMainRepository;
 @Autowired
 private WarehouseRepository warehouseRepository;
     public double totalPrice(List<ItemsDelivery> itemsDeliveries){

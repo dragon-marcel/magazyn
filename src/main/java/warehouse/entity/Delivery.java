@@ -11,7 +11,7 @@ public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
     private String description;
@@ -19,11 +19,11 @@ public class Delivery {
     private Date date;
     private String nameUser;
     @OneToMany(mappedBy = "delivery",cascade = CascadeType.ALL)
-    @Column(nullable = true)
     private List<ItemsDelivery> itemdeliveries;
     @OneToOne
     private Document document;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "deliverySecond_id")
     private Delivery deliverySecond;
 
     public Delivery() {
@@ -98,13 +98,14 @@ public class Delivery {
         return sum;
     }
 
-    public Delivery getDelivery() {
+    public Delivery getDeliverySecond() {
         return deliverySecond;
     }
 
     public void setDelivery(Delivery deliverySecond) {
         this.deliverySecond = deliverySecond;
     }
+
 
     @Override
     public String toString() {

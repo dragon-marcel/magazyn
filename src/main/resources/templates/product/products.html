@@ -51,11 +51,8 @@
                 </tr>
                 <tr>
                     <th>LP</th>
-                    <th>NAME</th>
-                    <th>PRICE</th>
-                    <th>EDIT</th>
-                    <th>DELATE</th>
-
+                    <th>NAZWA</th>
+                    <th>CENA</th>
                 </tr>
                 </thead>
                 <tbody th:each="products,lp:${products}">
@@ -63,10 +60,6 @@
                     <td th:text="${lp.count}">1</td>
                     <td th:text="${products.name}"></td>
                     <td th:text="${products.price}"></td>
-                    <td> <a th:href="${'/product/edit/'+ products.id}" class="text-success">
-                        <img th:src="@{/img/edit-png.png}" style="width:20px"/></a> </td>
-                    <td> <a th:href="${'product?delete='+ products.id}" class="text-danger">X</a> </td>
-
                 </tr>
                 </tbody>
             </table>
