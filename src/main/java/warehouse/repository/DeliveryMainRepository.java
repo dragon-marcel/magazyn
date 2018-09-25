@@ -36,8 +36,8 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
 
         if(delivery.getDocument().getId() == 1){
          Delivery delivery1 = new Delivery();
-         Warehouse warehouse  = (Warehouse)em.createQuery("select w from Warehouse w where id ='2'").getSingleResult();
-         Document document = (Document)em.createQuery("select d from Document d where id = 2").getSingleResult();
+        Warehouse warehouse  =em.find(Warehouse.class,2);
+         Document document = em.find(Document.class,2);
          delivery1.setWarehouse(warehouse);
          delivery1.setNameUser(nameUser);
          delivery1.setDocument(document);
