@@ -144,9 +144,16 @@ public class WarehouseShop {
         return "redirect:/warehouseShop/document/form/"+delivery.getId();
 }
     @RequestMapping(value ="warehouseShop/document/edit/{id}")
-    public String editDocument(@PathVariable("id")Long id) {
-
+    public String editDocument(@PathVariable("id")Long id,
+        RedirectAttributes flash,
+        Locale locale) {
+            Delivery delivery = deliveryShopInterface.findById(id);
+            Long documentId = delivery.getDocument().getId();
+            if (documentId == 1 || documentId == 2 ){
+                flash.addFlashAttribute("danger",
+                        messageSource.getMessage("text.warehouseShop.edit.danger",null,locale));
+                return "redirect:/warehouseShop/documents";
+            }
         return "warehouseShop/document/edit";
     }
 }
-
