@@ -150,8 +150,16 @@ public class WarehouseMain {
     }
 
     @RequestMapping(value ="warehouseMain/document/edit/{id}")
-        public String editDocument(@PathVariable("id")Long id) {
-
+        public String editDocument(@PathVariable("id")Long id,
+                                   RedirectAttributes flash,
+                                   Locale locale) {
+        Delivery delivery = deliveryMainInterface.findById(id);
+       Long documentId = delivery.getDocument().getId();
+        if (documentId == 1 || documentId == 2 ){
+            flash.addFlashAttribute("danger",
+                    messageSource.getMessage("text.warehouseMain.edit.danger",null,locale));
+            return "redirect:/warehouseMain/documents";
+        }
          return "warehouseMain/document/edit";
     }
     }
