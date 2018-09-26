@@ -156,7 +156,7 @@ public class WarehouseShop {
         if (!delivery.isConfirm()) {
             delivery.setConfirm(true);
             deliveryShopInterface.saveItem(delivery);
-
+ flash.addFlashAttribute("success",messageSource.getMessage("text.warehouseShop.success.submit",null,locale));
             return "redirect:/warehouseShop/document/form/"+delivery.getId();
         }else{
             flash.addFlashAttribute("danger",messageSource.getMessage("text.warehouseMain.danger.submit",null,locale));
