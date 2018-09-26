@@ -55,19 +55,15 @@ public class DeliveryShopRepository implements DeliveryShopInterface {
             for (int a = 0; a < itemsDeliveries.size(); a++) {
                 stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
                         itemsDeliveries.get(a).getQuantity(), 2L);
-                em.remove(document);
-
-            }
+              
+          } em.remove(document);
         }
         else{
             for (int a = 0; a < itemsDeliveries.size(); a++) {
                 stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
                         itemsDeliveries.get(a).getQuantity(), 2L);
-                em.remove(document);
-
             }
             em.remove(document);
-
         }
     }
     @Override
