@@ -56,9 +56,7 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
             for (int a = 0; a < itemsDeliveries.size(); a++) {
                 stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
                         itemsDeliveries.get(a).getQuantity(), 1L);
-                em.remove(document);
-
-            }
+            } em.remove(document);
         }
         else{
             for (int a = 0; a < itemsDeliveries.size(); a++) {
@@ -66,10 +64,8 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
                         itemsDeliveries.get(a).getQuantity(), 1L);
                 em.remove(document);
 
-            }
-            em.remove(document);
-
-        }
+            }          
+        } em.remove(document);
     }
     @Override
     public Delivery findById(Long id) {
