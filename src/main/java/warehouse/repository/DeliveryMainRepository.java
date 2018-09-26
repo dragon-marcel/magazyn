@@ -83,7 +83,7 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
         if(delivery.getDocument().getId() == 1 || delivery.getDocument().getId() == 4){
             for (int a = 0; a < itemsDeliveries.size(); a++) {
                 stateProductsRepository.checkStateProduct(itemsDeliveries.get(a).getProduct(),
-                        itemsDeliveries.get(a).getQuantity(), 2L);
+                        itemsDeliveries.get(a).getQuantity(), 1L);
                 em.merge(delivery);
 
             }
