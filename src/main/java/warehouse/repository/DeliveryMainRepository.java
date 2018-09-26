@@ -50,11 +50,22 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
     @Override
     @Transactional
     public void delete(Delivery document) {
-    em.remove(document);
-    }
-    @Override
-    public Delivery findById(Long id) {
-        return deliveryDAO.findById(id).orElse(null);
+        List<ItemsDelivery> itemsDeliveries = document.getItemdeliveries();
+
+        if(document.getDocument().getId() == 3 || document.getDocument().getId() == 2){
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 1L);
+            }
+                        em.remove(document);
+        }
+        else{
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 1L);
+            }
+            em.remove(document);
+        }
     }
 
     @Override
