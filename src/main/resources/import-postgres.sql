@@ -1,4 +1,5 @@
- 
+
+
 INSERT INTO users (id,enabled,name,password,role) VALUES
 (1,true ,'admin','$2a$10$JBqoIgquukYf9ZOqrTnlU.qjSIcb1MYqDY/p9FAX7T1XIEq7mAgqq','ADMIN');
 

@@ -144,7 +144,7 @@ public class WarehouseShop {
         model.addAttribute("products",products);
         model.addAttribute("title",
 
-                messageSource.getMessage("text.warehouseMain.document.document.title",null,locale));
+                messageSource.getMessage("text.warehouseShop.document.document.title",null,locale));
 
         return "warehouseShop/document/documentItemsform";
     }

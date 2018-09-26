@@ -24,13 +24,19 @@
                         <td><select readonly class="custom-select mr-sm-2" th:name="product">
                             <option th:each="product : ${products}"
                                     th:value="${product.id}"
-                                    th:text="${product.name}"></option>
-                        <td>
-                            <input th:type="text" th:name="quantity">
+                                    th:text="${product.name}">
+
+                            </option>
+                        </select>
                         </td>
-                        <td><button type="submit" class="btn btn-secondary float-right" >
-                            <label >DODAJ</label>
-                        </button></td>
+                        <td>
+                            <input th:type="number" th:name="quantity">
+                        </td>
+                        <td th:if="${delivery.confirm == false}">
+                            <button type="submit" class="btn btn-success" >
+                                <label >DODAJ</label>
+                            </button>
+                        </td>
                     </tr>
                 </form>
                 </tbody>
