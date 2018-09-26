@@ -23,6 +23,7 @@
                     <th><a th:href="@{?sort=user}">AUTOR</a></th>
                     <th></a>EDYTUJ</th>
                     <th>SZCZEGÓŁY</th>
+                    <th></a>ZATWIERDZENIE</th>
                     <th></a>USUŃ</th>
                 </tr>
                 </thead>
@@ -37,9 +38,15 @@
                     <td th:if="${deliveries.document.id == 3 or deliveries.document.id == 4}">
                         <a th:href="${'/warehouseMain/document/edit/'+ deliveries.id}" class="text-success">
                         <img th:src="@{/img/edit-png.png}" style="width:20px"/></a> </td>
+
                     <td> <a th:href="${'/warehouseMain/document/'+ deliveries.id}" class="text-success">
                         <img th:src="@{/img/details.png}" style="width:22px"/></a> </td>
-                    <td> <a th:href="${'/warehouseMain/document/delete/'+ deliveries.id}" class="text-danger">X</a> </td>
+                    <td th:if="${deliveries.confirm == true}">
+                        <img th:src="@{/img/ok.png}" style="width:40px"/></a></td>
+                    <td th:if="${deliveries.confirm == false}">
+                        <img th:src="@{/img/falsee.png}" style="width:20px"/></a></td>
+                    <td> <a th:href="${'/warehouseMain/document/delete/'+ deliveries.id}" class="text-danger">
+                        <img th:src="@{/img/delete.png}" style="width:30px"/></a> </td>
 
                 </tr>
                 </tbody>

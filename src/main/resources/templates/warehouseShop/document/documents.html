@@ -36,7 +36,12 @@
                             <img th:src="@{/img/edit-png.png}" style="width:20px"/></a> </td>
                     <td> <a th:href="${'/warehouseShop/document/'+ deliveries.id}" class="text-success">
                         <img th:src="@{/img/details.png}" style="width:22px"/></a> </td>
-                    <td> <a th:href="${'/warehouseShop/document/delete/'+ deliveries.id}" class="text-danger">X</a> </td>
+                    <td th:if="${deliveries.confirm == true}">
+                        <img th:src="@{/img/ok.png}" style="width:40px"/></a></td>
+                    <td th:if="${deliveries.confirm == false}">
+                        <img th:src="@{/img/falsee.png}" style="width:20px"/></a></td>
+                    <td> <a th:href="${'/warehouseShop/document/delete/'+ deliveries.id}" class="text-danger">
+                        <img th:src="@{/img/delete.png}" style="width:30px"/></a> </td>
 
                 </tr>
                 </tbody>

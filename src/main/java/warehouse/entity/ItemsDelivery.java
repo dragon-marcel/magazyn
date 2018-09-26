@@ -21,6 +21,12 @@ public class ItemsDelivery {
     public ItemsDelivery() {
     }
 
+    public ItemsDelivery(Product product, Long quantity, Delivery delivery) {
+        this.product = product;
+        this.quantity = quantity;
+        this.delivery = delivery;
+    }
+
     public Long getId() {
         return id;
     }

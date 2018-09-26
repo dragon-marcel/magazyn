@@ -26,16 +26,26 @@ public class StateProductsRepository implements StateProductsInterface{
 
         return stateProducts;
     }
+
+    @Override
+    public void checkStateProduct(Product product, Long quantity, Long warehouseId) {
+        List<StateProducts> stateProducts = findAllStateProductsbyWarehouse(warehouseId);
+        stateProducts.stream()
+                .filter(a->a.getProduct().equals(product))
+                .filter(a->{
+                    if(a.getQuantity() < quantity ){
+                        throw new NullPointerException();
+                    } return true;}
+                ).forEach(a->a.setQuantity(a.getQuantity()));
+
+    }
+
     @Override
     public void subtractFromStateProducts(Product product, Long quantity, Long warehouseID) {
         List<StateProducts> stateProducts = findAllStateProductsbyWarehouse(warehouseID);
             stateProducts.stream()
                     .filter(a->a.getProduct().equals(product))
-                    .filter(a->{
-                        if(a.getQuantity() < quantity ){
-                            throw new NullPointerException();
-                        } return true;}
-                        ).forEach(a->a.setQuantity(a.getQuantity() - quantity));
+                    .forEach(a->a.setQuantity(a.getQuantity() - quantity));
 
     }
     @Override

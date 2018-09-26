@@ -19,16 +19,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <form th:action="@{/warehouseShop/document/form/addItem}" th:object="${itemDocument}" method="post">
+                <form th:action="@{#}"  method="post">
                     <tr>
-                        <td><select readonly class="custom-select mr-sm-2" th:field="*{product}">
+                        <td><select readonly class="custom-select mr-sm-2" th:name="product">
                             <option th:each="product : ${products}"
                                     th:value="${product.id}"
                                     th:text="${product.name}"></option>
                         <td>
-                            <input th:type="text" th:field="*{quantity}">
+                            <input th:type="text" th:name="quantity">
                         </td>
-
                         <td><button type="submit" class="btn btn-secondary float-right" >
                             <label >DODAJ</label>
                         </button></td>
@@ -60,7 +59,9 @@
                     <td th:text="${delivery.date}"></td>
                     <td th:text="${delivery.nameUser}"></td>
                     <td th:text="${delivery.document.name}"></td>
-                    <td> <a th:href="${'/warehouseShop/document/delete/'+ delivery.id}" class="text-danger">X</a> </td>
+                    <td> <a th:href="${'/warehouseShop/document/delete/'+ delivery.id}" class="text-danger">
+                        <img th:src="@{/img/delete.png}" style="width:30px"/>
+                    </a> </td>
                 </tr>
                 </tbody>
             </table>
@@ -74,24 +75,23 @@
                     <th>ILOŚĆ</th>
                     <th>CENA</th>
                     <th>WARTOŚĆ</th>
-                    <th>EDYTUJ</th>
-                    <th>USUŃ</th>
-
                 </tr>
                 </thead>
-                <tbody th:each="item,lp:${delivery.itemdeliveries}">
+                <tbody th:each="item,lp:${list}">
                 <tr>
                     <td th:text="${lp.count}">1</td>
                     <td th:text="${item.product.name}"></td>
                     <td th:text="${item.quantity}"></td>
                     <td th:text="${item.product.price}"></td>
                     <td th:text="${item.getTotalPrice()}"> </td>
-                    <td> <a th:href="${'/delivery/details/'+ item.id}" class="text-success">
-                        <img th:src="@{/img/edit-png.png}" style="width:20px"/></a> </td>
-                    <td> <a th:href="${'/warehouseShop/document/delete/'+ item.id}" class="text-danger">X</a> </td>
                 </tr>
                 </tbody>
             </table>
+            <div th:if="delivery.isConfirm != true">
+                <form th:action="@{/warehouseShop/document/form/submit}" th:object="${delivery}" method="post">                        <td><button type="submit" class="btn btn-secondary float-right" >
+                    <button type="submit" class="btn btn-danger float-right"><label>ZATWIERDZ</label></button>
+                </form>
+            </div>
         </div>
     </div>
 </div></div></div></div>

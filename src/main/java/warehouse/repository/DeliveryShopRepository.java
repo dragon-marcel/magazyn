@@ -75,25 +75,35 @@ public class DeliveryShopRepository implements DeliveryShopInterface {
         return deliveryDAO.findById(id).orElse(null);
     }
 
-    @Override
     @Transactional
-    public void merge(Delivery delivery) {
+    @Override
+    public void saveItem(Delivery delivery) {
         List<ItemsDelivery> itemsDeliveries = delivery.getItemdeliveries();
-        if(delivery.getDocument().getId() == 3 || delivery.getDocument().getId() == 2){
+        if (delivery.getDocument().getId() == 1||delivery.getDocument().getId() == 4 ) {
             for (int a = 0; a < itemsDeliveries.size(); a++) {
-                stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
+                stateProductsRepository.checkStateProduct(itemsDeliveries.get(a).getProduct(),
                         itemsDeliveries.get(a).getQuantity(), 2L);
-                em.merge(delivery);
 
             }
+            em.merge(delivery);
         }
-        else{
-            for (int a = 0; a < itemsDeliveries.size(); a++) {
-                stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
-                        itemsDeliveries.get(a).getQuantity(), 2L);
+        em.merge(delivery);
+        if (delivery.isConfirm()) {
+            if (delivery.getDocument().getId() == 3 ||delivery.getDocument().getId() == 2) {
+                for (int a = 0; a < itemsDeliveries.size(); a++) {
+                    stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
+                            itemsDeliveries.get(a).getQuantity(), 2L);
+                    em.merge(delivery);
+                }
                 em.merge(delivery);
-
+            } else {
+                for (int a = 0; a < itemsDeliveries.size(); a++) {
+                    stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
+                            itemsDeliveries.get(a).getQuantity(), 2L);
+                    em.merge(delivery);
+                }
+                em.merge(delivery);
             }
-
         }
-    }}
+    }
+}

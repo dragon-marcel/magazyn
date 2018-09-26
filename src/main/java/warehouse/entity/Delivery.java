@@ -22,13 +22,15 @@ public class Delivery {
     private List<ItemsDelivery> itemdeliveries;
     @OneToOne
     private Document document;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "deliverySecond_id")
     private Delivery deliverySecond;
+    private boolean confirm;
 
     public Delivery() {
         this.itemdeliveries = new ArrayList<>();
         this.date = new Date();
+        this.confirm = false;
     }
 
 
@@ -41,6 +43,17 @@ public class Delivery {
         this.id = id;
     }
 
+    public void setDeliverySecond(Delivery deliverySecond) {
+        this.deliverySecond = deliverySecond;
+    }
+
+    public boolean isConfirm() {
+        return confirm;
+    }
+
+    public void setConfirm(boolean confirm) {
+        this.confirm = confirm;
+    }
 
     public Warehouse getWarehouse() {
         return warehouse;

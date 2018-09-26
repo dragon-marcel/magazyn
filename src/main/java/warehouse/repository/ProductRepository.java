@@ -48,4 +48,7 @@ public class ProductRepository implements ProductInterface {
         return(List<Product>)productDAO.findAll();
     }
 
+    public Product findOnebyId(Long id){
+        return em.find(Product.class,id);
+    }
 }
