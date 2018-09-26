@@ -89,7 +89,7 @@
                 </tbody>
             </table>
             <div th:if="delivery.isConfirm != true">
-            <form th:action="@{/warehouseMain/document/form/submit}" th:object="${delivery}" method="post">                        <td><button type="submit" class="btn btn-secondary float-right" >
+            <form th:action="@{/warehouseMain/document/form/submit}" th:object="${delivery}" method="post">
                 <button type="submit" class="btn btn-danger float-right"><label>ZATWIERDZ</label></button>
             </form>
             </div>
