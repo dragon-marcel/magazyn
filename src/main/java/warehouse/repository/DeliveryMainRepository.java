@@ -51,7 +51,7 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
     @Transactional
     public void delete(Delivery document) {
         List<ItemsDelivery> itemsDeliveries = document.getItemdeliveries();
-
+        if (document.isConfirm()){
         if(document.getDocument().getId() == 3 || document.getDocument().getId() == 2){
             for (int a = 0; a < itemsDeliveries.size(); a++) {
                 stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
@@ -67,7 +67,9 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
                 em.remove(document);
             }          
         } em.remove(document);
-    }
+    }else {
+            em.remove(document);
+        }}
     @Override
     public Delivery findById(Long id) {
         return deliveryDAO.findById(id).orElse(null);
