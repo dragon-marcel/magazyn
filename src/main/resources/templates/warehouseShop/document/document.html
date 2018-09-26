@@ -17,6 +17,7 @@
                     <th>OPIS</th>
                     <th>DATA</th>
                     <th>URZYTKOWNIK</th>
+                    <th>ZATWIERDZENIE</th>
                     <th>USUŃ</th>
 
                 </tr>
@@ -27,6 +28,10 @@
                     <td th:text="${delivery.description }"></td>
                     <td th:text="${delivery.date}"></td>
                     <td th:text="${delivery.nameUser}"></td>
+                    <td th:if="${delivery.confirm == true}">
+                        <img th:src="@{/img/ok.png}" style="width:40px"/></a></td>
+                    <td th:if="${delivery.confirm == false}">
+                        <img th:src="@{/img/falsee.png}" style="width:20px"/></a></td>
                 </tr>
                 </tbody>
             </table>
