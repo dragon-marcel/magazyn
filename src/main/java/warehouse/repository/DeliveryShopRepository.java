@@ -42,6 +42,8 @@ public class DeliveryShopRepository implements DeliveryShopInterface {
             delivery1.setDate(delivery.getDate());
             delivery1.setDescription(delivery.getDescription());
             delivery1.setDelivery(delivery);
+            delivery.setDelivery(delivery1);
+
             em.persist(delivery1);
     } }
     @Override
