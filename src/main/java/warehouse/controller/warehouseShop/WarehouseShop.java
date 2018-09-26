@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
-@SessionAttributes("itemDocument")
+@SessionAttributes("delivery")
 public class WarehouseShop {
     @Autowired
     private WarehouseRepository warehouseRepository;

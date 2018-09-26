@@ -42,6 +42,8 @@ public class DeliveryShopRepository implements DeliveryShopInterface {
             delivery1.setDate(delivery.getDate());
             delivery1.setDescription(delivery.getDescription());
             delivery1.setDelivery(delivery);
+            delivery.setDelivery(delivery1);
+
             em.persist(delivery1);
     } }
     @Override
@@ -64,7 +66,6 @@ public class DeliveryShopRepository implements DeliveryShopInterface {
                 em.remove(document);
 
             }
-            em.merge(document);
             em.remove(document);
 
         }
@@ -77,9 +78,20 @@ public class DeliveryShopRepository implements DeliveryShopInterface {
 
     @Override
     @Transactional
-    public void merge(Delivery delivery) {
+    public void saveItem(Delivery delivery) {
         List<ItemsDelivery> itemsDeliveries = delivery.getItemdeliveries();
-        if(delivery.getDocument().getId() == 3 || delivery.getDocument().getId() == 2){
+
+        if(delivery.getDocument().getId() == 1 || delivery.getDocument().getId() == 4){
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.checkStateProduct(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 2L);
+                em.merge(delivery);
+
+            }
+        }
+        if (delivery.isConfirm()){
+
+        if(delivery.getDocument().getId() == 2 || delivery.getDocument().getId() == 3){
             for (int a = 0; a < itemsDeliveries.size(); a++) {
                 stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
                         itemsDeliveries.get(a).getQuantity(), 2L);
@@ -96,4 +108,4 @@ public class DeliveryShopRepository implements DeliveryShopInterface {
             }
 
         }
-    }}
+    }}}

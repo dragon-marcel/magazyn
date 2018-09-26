@@ -36,8 +36,8 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
 
         if(delivery.getDocument().getId() == 1){
          Delivery delivery1 = new Delivery();
-         Warehouse warehouse  = (Warehouse)em.createQuery("select w from Warehouse w where id ='2'").getSingleResult();
-         Document document = (Document)em.createQuery("select d from Document d where id = 2").getSingleResult();
+         Warehouse warehouse  = em.find(Warehouse.class,2L);
+         Document document = em.find(Document.class,2L);
          delivery1.setWarehouse(warehouse);
          delivery1.setNameUser(nameUser);
          delivery1.setDocument(document);
@@ -50,7 +50,26 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
     @Override
     @Transactional
     public void delete(Delivery document) {
-    em.remove(document);
+        List<ItemsDelivery> itemsDeliveries = document.getItemdeliveries();
+
+        if(document.getDocument().getId() == 3 || document.getDocument().getId() == 2){
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.subtractFromStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 1L);
+                em.remove(document);
+
+            }
+        }
+        else{
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 1L);
+                em.remove(document);
+
+            }
+            em.remove(document);
+
+        }
     }
     @Override
     public Delivery findById(Long id) {
@@ -59,9 +78,17 @@ public class DeliveryMainRepository implements DeliveryMainInterface {
 
     @Override
     @Transactional
-    public void merge(Delivery delivery) {
+    public void saveItem(Delivery delivery) {
         List<ItemsDelivery>itemsDeliveries =delivery.getItemdeliveries();
+        if(delivery.getDocument().getId() == 1 || delivery.getDocument().getId() == 4){
+            for (int a = 0; a < itemsDeliveries.size(); a++) {
+                stateProductsRepository.checkStateProduct(itemsDeliveries.get(a).getProduct(),
+                        itemsDeliveries.get(a).getQuantity(), 2L);
+                em.merge(delivery);
 
+            }
+        }
+        if (delivery.isConfirm()){
 if (delivery.getDocument().getId() == 3){
             for(int a = 0 ;a< itemsDeliveries.size();a++){
                 stateProductsRepository.addtoStateProducts(itemsDeliveries.get(a).getProduct(),
@@ -77,4 +104,4 @@ if (delivery.getDocument().getId() == 3){
 
     }
 
-    }}}
+    }}}}
