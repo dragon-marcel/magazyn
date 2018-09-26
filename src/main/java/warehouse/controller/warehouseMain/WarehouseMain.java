@@ -71,12 +71,18 @@ public class WarehouseMain {
                     messageSource.getMessage("text.warehouseMain.document.document.errorDelete", null, locale));
             return "redirect:/warehouseMain/documents";
         }
-        deliveryMainInterface.delete(document);
+        try {
+            deliveryMainInterface.delete(document);
 
-        flash.addFlashAttribute("success",
-                messageSource.getMessage("text.warehouseMain.document.document.successDelete", null, locale));
+            flash.addFlashAttribute("success",
+                    messageSource.getMessage("text.warehouseMain.document.document.successDelete", null, locale));
 
-        return "redirect:/warehouseMain/documents";
+            return "redirect:/warehouseMain/documents";
+        }catch (NullPointerException ne){
+            flash.addFlashAttribute("danger",
+                    messageSource.getMessage("text.warehouseMain.document.document.dangerDelete", null, locale));
+            return "redirect:/warehouseMain/documents";
+        }
     }
 
 

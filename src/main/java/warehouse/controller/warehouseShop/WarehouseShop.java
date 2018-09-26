@@ -70,12 +70,19 @@ public class WarehouseShop {
                     messageSource.getMessage("text.warehouseShop.document.document.errorDelete", null, locale));
             return "redirect:/warehouseShop/documents";
 
-        }
-        deliveryShopInterface.delete(document);
-        flash.addFlashAttribute("success",
-                messageSource.getMessage("text.warehouseShop.document.document.successDelete", null, locale));
+        }try {
+            deliveryShopInterface.delete(document);
+            flash.addFlashAttribute("success",
+                    messageSource.getMessage("text.warehouseShop.document.document.successDelete", null, locale));
+             return "redirect:/warehouseShop/documents";
 
-        return "redirect:/warehouseShop/documents";
+        }catch (NullPointerException ne){
+
+            flash.addFlashAttribute("danger",
+                    messageSource.getMessage("text.warehouseShop.document.document.dangerDelete", null, locale));
+            return "redirect:/warehouseShop/documents";
+
+        }
     }
 
     @RequestMapping(value = "/warehouseShop/document/form")
