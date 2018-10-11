@@ -12,8 +12,7 @@ import javax.persistence.*;
 import java.util.List;
 @Repository
 public class StateProductsRepository implements StateProductsInterface{
-    @Autowired
-    private StateProductsDAO stateProductsDAO;
+
     @PersistenceContext
     private EntityManager em;
 
@@ -31,27 +30,32 @@ public class StateProductsRepository implements StateProductsInterface{
     public void checkStateProduct(Product product, Long quantity, Long warehouseId) {
         List<StateProducts> stateProducts = findAllStateProductsbyWarehouse(warehouseId);
         stateProducts.stream()
-                .filter(a->a.getProduct().equals(product))
+                .filter(a->a.getProduct().getId().equals(product.getId()))
                 .filter(a->{
                     if(a.getQuantity() < quantity ){
                         throw new NullPointerException();
                     } return true;}
                 ).forEach(a->a.setQuantity(a.getQuantity()));
-
     }
 
     @Override
     public void subtractFromStateProducts(Product product, Long quantity, Long warehouseID) {
         List<StateProducts> stateProducts = findAllStateProductsbyWarehouse(warehouseID);
             stateProducts.stream()
-                    .filter(a->a.getProduct().equals(product))
+                    .filter(a->a.getProduct().getId().equals(product.getId()))
                     .forEach(a->a.setQuantity(a.getQuantity() - quantity));
-
+        for (StateProducts s:stateProducts){
+            em.merge(s);
+        }
     }
     @Override
     public void addtoStateProducts(Product product, Long quantity, Long warehouseID) {
         List<StateProducts> stateProducts = findAllStateProductsbyWarehouse(warehouseID);
-        stateProducts.stream().filter(a -> a.getProduct().equals(product)).
+        stateProducts.stream().filter(a -> a.getProduct().getId().equals(product.getId())).
                 forEach(a -> a.setQuantity(a.getQuantity() + quantity));
+        for (StateProducts s:stateProducts){
+            em.merge(s);
+        }
     }
+
 }

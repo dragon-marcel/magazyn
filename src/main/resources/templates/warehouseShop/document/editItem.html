@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/Layout :: head"/>
+
+<body>
+<div th:replace="layout/Layout :: navbar"/>
+<div th:replace="layout/Layout :: info"/>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-12">
+            <table class="table table-bordered text-center">
+                <thead class="thead-light">
+                <tr>
+                    <th class="col-1">ID</th>
+                    <th>NAZWA</th>
+                    <th class="col-1">ILOŚĆ</th>
+                    <th class="col-1">ZMIEŃ</th>
+                </tr>
+                </thead>
+                <form th:action="@{/}" th:object="${Item}" method="post">
+              <tr>
+                  <td><input th:type="hidden" th:field="*{id}"></td>
+                  <td><input th:type="hidden"th:field="*{product}"></td>
+                  <td><input th:type="number"th:field="*{quantity}"></td>
+                  <td><input th:type="hidden"th:field="*{delivery}"></td>
+                  <td><button type="submit" class="btn btn-info"id="change">ZMIEŃ</button> </td>
+                </tr>
+                </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</div>
+</html>

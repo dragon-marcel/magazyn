@@ -7,12 +7,99 @@
 <div th:replace="layout/Layout :: info"/>
 <div class="container">
     <div class="row justify-content-md-center">
-        <div th:replace="layout/Layout :: navMain"/>
-
         <div class="col-12">
-          STRONA W BUDOWIE
+            <table class="table table-bordered text-center">
+                <thead class="thead-light">
+                <tr>
+                    <th colspan="13" style="text-align: center;"> <h2>SZCZEGÓŁY DOKUMENTU</h2> </th>
+                </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>OPIS</th>
+                    <th>DATA</th>
+                    <th>DOKUMENT</th>
+                    <th>URZYTKOWNIK</th>
+                    <th>ZATWIERDZENIE</th>
+                </tr>
+                </thead>
+                <tbody th:each="delivery:${delivery}">
+                <tr>
+                    <td th:text="${delivery.id}"></td>
+                    <td th:text="${delivery.description }"></td>
+                    <td th:text="${delivery.date}"></td>
+                    <td th:text="${delivery.document.name}"></td>
+                    <td th:text="${delivery.nameUser}"></td>
+                    <td th:if="${delivery.confirm == true}">
+                        <img th:src="@{/img/ok.png}" style="width:40px"/></a></td>
+                    <td th:if="${delivery.confirm == false}">
+                        <img th:src="@{/img/falsee.png}" style="width:20px"/></a></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-
+        <table class="table table-hover table-bordered text-center">
+            <thead class="thead-light">
+            <tr>
+                <th colspan="12" style="text-align: center;"> <h2>NOWY PRODUKT</h2> </th>
+            </tr>
+            <tr>
+                <th>NAZWA</th>
+                <th>ILOSC</th>
+                <th>DODAJ</th>
+            </tr>
+            </thead>
+            <tbody>
+            <form th:action="@{#}"  method="post">
+                <tr>
+                    <td><select readonly class="custom-select mr-sm-2" th:name="product">
+                        <option th:each="product : ${products}"
+                                th:value="${product.id}"
+                                th:text="${product.name}"></option>
+                    </select>
+                    </td>
+                    <td>
+                        <input th:type="number" th:name="quantity">
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-success" >
+                            <label >DODAJ</label>
+                        </button>
+                    </td>
+                </tr>
+            </form>
+            </tbody>
+        </table>
+        <div class="col-12">
+            <div class="alert alert-info" th:if="${#lists.isEmpty(delivery.itemdeliveries)}">
+                Brak porduktów w dokumencie.
+            </div>
+            <table th:if="${not #lists.isEmpty(delivery.itemdeliveries ) }" class="table table-bordered text-center">
+                <thead class="thead-light">
+                <tr>
+                    <th class="col-1">LP</th>
+                    <th>NAZWA</th>
+                    <th class="col-1">ILOŚĆ</th>
+                    <th class="col-1">ZMIEŃ</th>
+                    <th class="col-1">USUŃ</th>
+                </tr>
+                </thead>
+                <tbody th:each="item,lp:${itemsDeliveries}">
+                <tr>
+                    <td th:text="${lp.count}">1</td>
+                    <td th:text="${item.product.name}"></td>
+                    <td th:text="${item.quantity}"></td>
+                    <td><a th:href="@{/}" class="btn btn-info">ZMIEŃ</a> </td>
+                    <td> <a th:href="${'/warehouseMain/document/edit?deleteId='+ item.id}" class="text-danger">
+                        <img th:src="@{/img/delete.png}" style="width:30px"/></a> </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${delivery.confirm == false}">
+                <form th:action="@{/warehouseMain/document/form/submit}" th:object="${delivery}" method="post">
+                    <button type="submit" class="btn btn-danger float-right"><label>ZATWIERDZ</label></button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 <footer th:replace="layout/layout::footer"/>

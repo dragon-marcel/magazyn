@@ -23,21 +23,24 @@ public class LoginController {
                         Locale locale) {
 
         if (principal != null) {
+
             flash.addFlashAttribute("success",
                     messageSource.getMessage("text.login.successLogin",null,locale));
             return "redirect:/users";
         }
         if (error != null){
+
             flash.addFlashAttribute("danger",
                     messageSource.getMessage("text.login.errorLogin",null,locale));
+
             return "redirect:/login";
         }
         if (logout != null){
+
             flash.addFlashAttribute("success",
                     messageSource.getMessage("text.login.successLogout",null,locale));
             return "redirect:/login";
         }
-
         return "login/login";
     }
 }

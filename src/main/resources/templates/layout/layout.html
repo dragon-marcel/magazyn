@@ -41,7 +41,7 @@
             </ul>
             <div>
                 <form class="float-right" th:action="@{/logout}" method="post">
-                    <input th:type="submit" class="btn btn-light" onclick="return confirm('Are you sure logout??');"
+                    <input th:type="submit" class="btn btn-light"
                            th:value="#{text.navbar.logout}"/>
                 </form>
             </div>
@@ -82,6 +82,41 @@
         <div class="alert alert-danger"  th:if="${danger != null}" th:text="${danger}"/>
         <div class="alert alert-info"  th:if="${info != null}" th:text="${info}"/>
     </div>
+
+
+    <!-- Modal Delete -->
+    <div class="modalDelete" th:fragment="modalDelete">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header alert-danger">
+                    <h5 class="modal-title " id="exampleModalLabel">USUŃ DOKUMENT</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Jesteś pewny,że chcesz usunąć dokument??
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">ANULUJ</button>
+                    <a href="" id="delRef" class="btn btn-danger">USUŃ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script type="text/javascript">
+        $(document).ready(function () {
+         $('.delete').on('click',function (event) {
+         event.preventDefault()
+            var href = $(this).attr('href');
+            $('#deleteModal #delRef').attr('href',href);
+            $('#deleteModal').modal();
+            });
+        });
+     </script>
+</div>
+
 <!--FOOTER-->
     <footer th:fragment="footer" class="page-footer font-small bg-dark mt-5">
         <div class="text-light text-center py-3 ">Magazyn - Marcel Dragon

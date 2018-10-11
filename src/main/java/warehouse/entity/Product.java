@@ -1,8 +1,7 @@
 package warehouse.entity;
 
-import org.springframework.stereotype.Controller;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "products")
@@ -10,8 +9,10 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotEmpty(message = "Uzupełnij nazwę")
     private String name;
     private double price;
+
     public Product() {
     }
 

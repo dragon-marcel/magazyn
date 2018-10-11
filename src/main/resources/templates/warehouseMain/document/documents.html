@@ -16,15 +16,16 @@
                     <th colspan="12" style="text-align: center;"> <h2>LISTA DOKUMENTÓW</h2> </th>
                 </tr>
                 <tr>
-                    <th>LP</th>
-                    <th><a th:href="@{?sort=type}">TYP DOKUMENTU</th>
-                    <th>OPIS</th>
-                    <th><a th:href="@{?sort=date}">DATA</a></th>
-                    <th><a th:href="@{?sort=user}">AUTOR</a></th>
-                    <th></a>EDYTUJ</th>
-                    <th>SZCZEGÓŁY</th>
-                    <th></a>ZATWIERDZENIE</th>
-                    <th></a>USUŃ</th>
+                    <th th:class="col-1">LP</th>
+                    <th th:class="col-4"><a th:href="@{?sort=type}">TYP DOKUMENTU</th>
+                    <th th:class="col-4" >OPIS</th>
+                    <th>WARTOŚĆ</th>
+                    <th th:class="col-2"><a th:href="@{?sort=date}">DATA</a></th>
+                    <th th:class="col-2"><a th:href="@{?sort=user}">AUTOR</a></th>
+                    <th th:class="col-1">EDYTUJ</th>
+                    <th th:class="col-1">SZCZEGÓŁY</th>
+                    <th th:class="col-1">STATUS</th>
+                    <th th:class="col-1">USUŃ</th>
                 </tr>
                 </thead>
                 <tbody th:each="deliveries,lp:${deliveries}">
@@ -32,20 +33,20 @@
                     <td th:text="${lp.count}">1</td>
                     <td th:text="${deliveries.document.name}"></td>
                     <td th:text="${deliveries.description}"></td>
+                    <td th:text="${deliveries.getTotalValue()+ ' zł'}"></td>
                     <td th:text="${deliveries.date}"></td>
                     <td th:text="${deliveries.nameUser}"></td>
                     <td th:if="${deliveries.document.id == 1 or deliveries.document.id == 2}">X</td>
                     <td th:if="${deliveries.document.id == 3 or deliveries.document.id == 4}">
                         <a th:href="${'/warehouseMain/document/edit/'+ deliveries.id}" class="text-success">
                         <img th:src="@{/img/edit-png.png}" style="width:20px"/></a> </td>
-
                     <td> <a th:href="${'/warehouseMain/document/'+ deliveries.id}" class="text-success">
                         <img th:src="@{/img/details.png}" style="width:22px"/></a> </td>
                     <td th:if="${deliveries.confirm == true}">
                         <img th:src="@{/img/ok.png}" style="width:40px"/></a></td>
                     <td th:if="${deliveries.confirm == false}">
                         <img th:src="@{/img/falsee.png}" style="width:20px"/></a></td>
-                    <td> <a th:href="${'/warehouseMain/document/delete/'+ deliveries.id}" class="text-danger">
+                    <td> <a th:href="${'/warehouseMain/document/delete/'+ deliveries.id}" class="text-danger delete">
                         <img th:src="@{/img/delete.png}" style="width:30px"/></a> </td>
 
                 </tr>
@@ -56,6 +57,7 @@
         </div>
     </div>
 </div>
+<div th:replace="layout/layout::modalDelete"/>
 <footer th:replace="layout/layout::footer"/>
 </body>
 </html>

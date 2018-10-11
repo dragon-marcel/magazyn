@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -16,13 +17,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "name")
+    @NotEmpty(message = "Uzupełnij nazwę")
     private String name;
-    @Column(name = "password")
+    @NotEmpty(message = "Uzupełnij hasło")
     private String password;
-    @Column(name = "role")
     private String role;
-    @Column(name = "enabled")
     private boolean enabled;
 
     public User(){
@@ -81,7 +80,11 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", enabled=" + enabled +
                 '}';
     }
 }

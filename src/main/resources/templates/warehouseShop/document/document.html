@@ -6,20 +6,20 @@
 <div th:replace="layout/Layout :: info"/>
 <div class="container">
     <div class="row justify-content-md-center">
-        <div class="col-12">
+        <td class="col-12">
             <table class="table table-bordered text-center">
                 <thead class="thead-light">
                 <tr>
                     <th colspan="13" style="text-align: center;"> <h2>SZCZEGÓŁY DOKUMENTU</h2> </th>
                 </tr>
                 <tr>
-                    <th>ID</th>
-                    <th>OPIS</th>
-                    <th>DATA</th>
-                    <th>URZYTKOWNIK</th>
-                    <th>ZATWIERDZENIE</th>
-                    <th>USUŃ</th>
-
+                    <th class="col-1">ID</th>
+                    <th class="col-4">OPIS</th>
+                    <th class="col-2">DATA</th>
+                    <th class="col-4">DOKUMENT</th>
+                    <th class="col-2">URZYTKOWNIK</th>
+                    <th class="col-2">STATUS</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody th:each="delivery:${delivery}">
@@ -27,11 +27,17 @@
                     <td th:text="${delivery.id}"></td>
                     <td th:text="${delivery.description }"></td>
                     <td th:text="${delivery.date}"></td>
+                    <td th:text="${delivery.document.name}"></td>
                     <td th:text="${delivery.nameUser}"></td>
                     <td th:if="${delivery.confirm == true}">
                         <img th:src="@{/img/ok.png}" style="width:40px"/></a></td>
                     <td th:if="${delivery.confirm == false}">
                         <img th:src="@{/img/falsee.png}" style="width:20px"/></a></td>
+                    <td th:if="${delivery.confirm == false}">
+                        <form th:action="@{/warehouseShop/document/form/submit}" th:object="${delivery}" method="post">
+                            <button type="submit" class="btn btn-danger float-right"><label>ZATWIERDZ</label></button>
+                        </form>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -43,11 +49,11 @@
             <table th:if="${not #lists.isEmpty(delivery.itemdeliveries ) }" class="table table-bordered text-center">
                 <thead class="thead-light">
                 <tr>
-                    <th>LP</th>
-                    <th>NAZWA</th>
-                    <th>ILOŚĆ</th>
-                    <th>CENA</th>
-                    <th>WARTOŚĆ</th>
+                    <th class="col-1">LP</th>
+                    <th class="col-4">NAZWA</th>
+                    <th class="col-1">ILOŚĆ</th>
+                    <th class="col-2">CENA</th>
+                    <th class="col-2">WARTOŚĆ</th>
                 </tr>
                 </thead>
                 <tbody th:each="item,lp:${delivery.itemdeliveries}">

@@ -1,8 +1,4 @@
 package warehouse.entity;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Proxy;
-
 import javax.persistence.*;
 
 @Entity
@@ -15,7 +11,7 @@ public class ItemsDelivery {
     @JoinColumn(name = "product_id")
     private Product product;
     private Long quantity;
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Delivery delivery;
 
     public ItemsDelivery() {
@@ -61,6 +57,7 @@ public class ItemsDelivery {
     public double getTotalPrice(){
         return getQuantity()*getProduct().getPrice();
     }
+
     @Override
     public String toString() {
         return "ItemsDelivery{" +

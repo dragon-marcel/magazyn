@@ -1,6 +1,7 @@
 package warehouse.entity;
 
 import javax.persistence.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +23,7 @@ public class Delivery {
     private List<ItemsDelivery> itemdeliveries;
     @OneToOne
     private Document document;
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "deliverySecond_id")
     private Delivery deliverySecond;
     private boolean confirm;
@@ -106,9 +107,16 @@ public class Delivery {
         this.document = document;
     }
 
-    public double totalPrice(List<ItemsDelivery> itemsDeliveries){
-        double sum =itemsDeliveries.stream().map(ItemsDelivery::getTotalPrice).reduce(Double::sum).get();
-        return sum;
+
+    public String getTotalValue(){
+        DecimalFormat df2 = new DecimalFormat("##.##");
+        Double sum;
+        if (itemdeliveries.isEmpty()){
+            sum = 0.00;
+        }else {
+            sum = itemdeliveries.stream().map(ItemsDelivery::getTotalPrice).reduce(Double::sum).get();
+        }
+        return df2.format(sum);
     }
 
     public Delivery getDeliverySecond() {
@@ -131,6 +139,7 @@ public class Delivery {
                 ", itemdeliveries=" + itemdeliveries +
                 ", document=" + document +
                 ", deliverySecond=" + deliverySecond +
+                ", confirm=" + confirm +
                 '}';
     }
 }

@@ -13,13 +13,15 @@ import java.util.Locale;
 
 @Controller
 public class StateProductsShop {
+
     @Autowired
     private MessageSource messageSource;
     @Autowired
     private StateProductsRepository stateProductsRepository;
 
     @RequestMapping("/warehouseShop/stateProducts")
-    public String findAll(Model model,Locale locale){
+    public String findAllStateProducts(Model model,Locale locale){
+
         List<StateProducts> stateProducts = stateProductsRepository.findAllStateProductsbyWarehouse(2L);
         model.addAttribute("stateProducts",stateProducts);
         model.addAttribute("title",

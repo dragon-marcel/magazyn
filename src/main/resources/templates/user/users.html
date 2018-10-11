@@ -16,18 +16,19 @@
                     <!-FORM USER-!>
                     <form th:action="@{/users}" th:object="${newUser}" method="post" >
                         <div class="form-group row">
-                            <label for="inputName" class="col-sm-5 col-form-label">Name</label>
+                            <label for="inputName" class="col-sm-5 col-form-label">Nazwa :</label>
                             <div class="col-sm-6">
                                 <input th:type="text" th:field="*{name}" class="form-control" id="inputName"
-                                       placeholder="name">
+                                       placeholder="name" >
+                              <small class="text-form text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputPassword" class="col-sm-5 col-form-label">Password</label>
+                            <label for="inputPassword" class="col-sm-5 col-form-label">Hasło :</label>
                             <div class="col-sm-6">
                                 <input th:type="password" th:field="*{password}" class="form-control"
                                        id="inputPassword"  placeholder="password">
-
+                                <small class="text-form text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"/>
                             </div>
                         </div>
 
@@ -49,11 +50,10 @@
                     <th colspan="6" style="text-align: center;"> <h2>URZYTKOWNICY</h2> </th>
                 </tr>
                 <tr>
-                    <th>LP</th>
-                    <th>ID</th>
-                    <th>NAME</th>
-                    <th>DELATE</th>
-
+                    <th class="col-2">LP</th>
+                    <th class="col-2">ID</th>
+                    <th>NAZWA URZYTKOWNIKA</th>
+                    <th class="col-2">USUŃ</th>
                 </tr>
                 </thead>
                 <tbody th:each="users,lp:${users}">

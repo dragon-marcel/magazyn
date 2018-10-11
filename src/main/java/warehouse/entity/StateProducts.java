@@ -3,9 +3,9 @@ package warehouse.entity;
 import javax.persistence.*;
 import java.util.List;
 
-
 @Entity
 public class StateProducts {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

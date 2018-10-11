@@ -1,6 +1,7 @@
 package warehouse.controller.warehouseShop;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import warehouse.repository.*;
 import warehouse.service.DeliveryService;
 
 import javax.persistence.PersistenceException;
+import javax.persistence.TransactionRequiredException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -26,10 +28,13 @@ public class WarehouseShop {
     private DocumentRepository documentRepository;
     @Autowired
     private DeliveryService deliveryService;
+    @Qualifier("DocumentWarehouseShop")
     @Autowired
-    private DeliveryShopRepository deliveryShopInterface;
+    private DeliveryImpl deliveryImpl;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ItemDeliveryIntefrace itemDeliveryIntefrace;
 
     @RequestMapping(value = "/warehouseShop/documents")
     public String findlAllDocuments(@RequestParam(value = "sort",required = false)String sort,
@@ -47,12 +52,17 @@ public class WarehouseShop {
     public String findOneDocumentById(@PathVariable("id")Long id,
                        Model model,
                        Locale locale){
-        Delivery delivery = deliveryShopInterface.findById(id);
+        Delivery document = deliveryImpl.findById(id);
+        if (document == null){
+            model.addAttribute("danger",
+                    messageSource.getMessage("text.warehouseShop.document.document.notExist",null,locale));
+            return "redirect:/warehouseShop/documents";
+        }
         ItemsDelivery itemDocument = new ItemsDelivery();
-        itemDocument.setDelivery(delivery);
+        itemDocument.setDelivery(document);
         List<Product>products = productRepository.findall();
         model.addAttribute("itemDocument",itemDocument);
-        model.addAttribute("delivery",delivery);
+        model.addAttribute("delivery",document);
         model.addAttribute("products",products);
         model.addAttribute("title",
                 messageSource.getMessage("text.warehouseShop.document.document.title",null,locale));
@@ -64,14 +74,14 @@ public class WarehouseShop {
                          RedirectAttributes flash,
                          Locale locale) {
 
-        Delivery document = deliveryShopInterface.findById(id);
+        Delivery document = deliveryImpl.findById(id);
         if (document == null){
             flash.addFlashAttribute("danger",
                     messageSource.getMessage("text.warehouseShop.document.document.errorDelete", null, locale));
             return "redirect:/warehouseShop/documents";
 
         }try {
-            deliveryShopInterface.delete(document);
+            deliveryImpl.delete(document);
             flash.addFlashAttribute("success",
                     messageSource.getMessage("text.warehouseShop.document.document.successDelete", null, locale));
              return "redirect:/warehouseShop/documents";
@@ -106,10 +116,10 @@ public class WarehouseShop {
                        Model model,Locale locale,
                        RedirectAttributes flash)throws Exception {
             try {
-                deliveryShopInterface.save(delivery);
+                deliveryImpl.save(delivery);
                 model.addAttribute("success",
                         messageSource.getMessage("text.warehouseShop.document.success.save", null, locale));
-            } catch (PersistenceException pe) {
+            } catch (NullPointerException e) {
                 flash.addFlashAttribute("danger",
                         messageSource.getMessage("text.warehouseShop.document.danger.delivery", null, locale));
                 return "redirect:/warehouseShop/document/form";
@@ -128,7 +138,7 @@ public class WarehouseShop {
                                      RedirectAttributes flash,
                                      @RequestParam(value = "product",required = false)Long product,
                                      @RequestParam(value = "quantity",required = false)Long quantity){
-        Delivery delivery = deliveryShopInterface.findById(id);
+        Delivery delivery = deliveryImpl.findById(id);
         List<ItemsDelivery>list = delivery.getItemdeliveries();
 
         if (product != null){
@@ -137,7 +147,7 @@ public class WarehouseShop {
             delivery.addItemsDelivery(new ItemsDelivery(product1,quantity,delivery));
         }
         try {
-            deliveryShopInterface.saveItem(delivery);
+            deliveryImpl.saveItem(delivery);
         }catch (NullPointerException e){
 
             flash.addFlashAttribute("danger","Brak lub nie wystarczająca ilość towaru na magazynie");
@@ -156,13 +166,13 @@ public class WarehouseShop {
         return "warehouseShop/document/documentItemsform";
     }
     @RequestMapping(value = "/warehouseShop/document/form/submit",method = RequestMethod.POST)
-    public String saveItemDocument(@ModelAttribute("delivery") Delivery delivery,
+    public String submitDocument(@ModelAttribute("delivery") Delivery delivery,
                                    RedirectAttributes flash,
                                    Locale locale){
 
         if (!delivery.isConfirm()) {
             delivery.setConfirm(true);
-            deliveryShopInterface.saveItem(delivery);
+            deliveryImpl.submit(delivery);
  flash.addFlashAttribute("success",messageSource.getMessage("text.warehouseShop.success.submit",null,locale));
             return "redirect:/warehouseShop/document/form/"+delivery.getId();
         }else{
@@ -173,15 +183,66 @@ public class WarehouseShop {
     }
     @RequestMapping(value ="warehouseShop/document/edit/{id}")
     public String editDocument(@PathVariable("id")Long id,
-        RedirectAttributes flash,
-        Locale locale) {
-            Delivery delivery = deliveryShopInterface.findById(id);
-            Long documentId = delivery.getDocument().getId();
-            if (documentId == 1 || documentId == 2 ){
-                flash.addFlashAttribute("danger",
-                        messageSource.getMessage("text.warehouseShop.edit.danger",null,locale));
-                return "redirect:/warehouseShop/documents";
+                               @RequestParam(value = "product",required = false)Long product,
+                               @RequestParam(value = "quantity",required = false)Long quantity,
+                               @RequestParam(value = "itemId",required = false) Long itemId,
+                               RedirectAttributes flash,
+                               Locale locale, Model model)throws Exception {
+        if (itemId != null) {
+            ItemsDelivery itemEdit = itemDeliveryIntefrace.findOneById(itemId);
+            model.addAttribute("itemEdit", itemEdit);
+        }
+        Delivery delivery = deliveryImpl.findById(id);
+        List<Product> products = productRepository.findall();
+        ItemsDelivery items = new ItemsDelivery();
+        model.addAttribute("Item",items);
+        if (product != null) {
+            Product product1 = productRepository.findOnebyId(product);
+            ItemsDelivery itemsDelivery = new ItemsDelivery(product1, quantity, delivery);
+            delivery.addItemsDelivery(itemsDelivery);
+            try {
+                itemDeliveryIntefrace.saveItem(itemsDelivery);
+            } catch (NullPointerException e) {
+
+                flash.addFlashAttribute("danger", "Brak lub nie wystarczająca ilość towaru na magazynie");
+
+                return "redirect:/warehouseShop/document/edit/" + delivery.getId();
             }
+
+        }
+        Long documentId = delivery.getDocument().getId();
+        List<ItemsDelivery>itemsDeliveries = delivery.getItemdeliveries();
+        model.addAttribute("delivery",delivery);
+        model.addAttribute("itemsDeliveries",itemsDeliveries);
+        model.addAttribute("products",products);
+        model.addAttribute("title",messageSource.getMessage("text.warehouseShop.edit.title",null,locale));
+        if (documentId == 1 || documentId == 2 ){
+            flash.addFlashAttribute("danger",
+                    messageSource.getMessage("text.warehouseShop.edit.danger",null,locale));
+            return "redirect:/warehouseShop/documents";
+        }
         return "warehouseShop/document/edit";
     }
+    @RequestMapping(value ="warehouseShop/document/edit")
+    public String deleteItem(@RequestParam(value = "deleteId",required = false)Long deleteId,
+                             Model model,
+                             RedirectAttributes flash,
+                             Locale locale)throws Exception{
+
+            ItemsDelivery itemDelete= itemDeliveryIntefrace.findOneById(deleteId);
+            Delivery delivery = itemDelete.getDelivery();
+
+            try {
+                itemDeliveryIntefrace.delete(itemDelete);
+            } catch (NullPointerException ne) {
+                flash.addFlashAttribute("danger",
+                        messageSource.getMessage("text.warehouseShop.document.document.dangerDelete", null, locale));
+                return "redirect:/warehouseShop/document/edit/" + delivery.getId();
+            }
+            flash.addFlashAttribute("success",
+                    messageSource.getMessage("text.warehouseShop.edit.deleteItem", null, locale));
+            return "redirect:/warehouseShop/document/edit/" + delivery.getId();
+    }
+
 }
+

@@ -1,6 +1,7 @@
 package warehouse.controller.warehouseMain;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import warehouse.repository.*;
 import warehouse.service.DeliveryService;
 
 import javax.persistence.PersistenceException;
+import javax.persistence.TransactionRequiredException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -22,16 +24,19 @@ public class WarehouseMain {
     private WarehouseRepository warehouseRepository;
     @Autowired
     private MessageSource messageSource;
+    @Qualifier("DocumentWarehouseMain")
     @Autowired
-    private DeliveryMainInterface deliveryMainInterface;
+    private DeliveryImpl deliveryImp;
     @Autowired
     private DeliveryService deliveryService;
     @Autowired
     private DocumentRepository documentRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ItemDeliveryIntefrace itemDeliveryIntefrace;
 
-    @RequestMapping(value = "/warehouseMain/documents")
+    @RequestMapping(value = {"/","/warehouseMain/documents"})
     public String findlAllDocuments(@RequestParam(value = "sort",required = false)String sort,
                            Model model,
                            Locale locale){
@@ -47,7 +52,12 @@ public class WarehouseMain {
     public String findDocumentById(@PathVariable("id")Long id,
                        Model model,
                        Locale locale){
-        Delivery document = deliveryMainInterface.findById(id);
+        Delivery document = deliveryImp.findById(id);
+        if (document == null){
+            model.addAttribute("danger",
+                    messageSource.getMessage("text.warehouseMain.document.document.notExist",null,locale));
+            return "redirect:/warehouseMain/documents";
+        }
         ItemsDelivery itemDocument = new ItemsDelivery();
         List<Product>products = productRepository.findall();
 
@@ -65,14 +75,14 @@ public class WarehouseMain {
                          RedirectAttributes flash,
                          Locale locale) {
 
-        Delivery document = deliveryMainInterface.findById(id);
+        Delivery document = deliveryImp.findById(id);
         if (document == null){
             flash.addFlashAttribute("danger",
                     messageSource.getMessage("text.warehouseMain.document.document.errorDelete", null, locale));
             return "redirect:/warehouseMain/documents";
         }
         try {
-            deliveryMainInterface.delete(document);
+            deliveryImp.delete(document);
 
             flash.addFlashAttribute("success",
                     messageSource.getMessage("text.warehouseMain.document.document.successDelete", null, locale));
@@ -106,10 +116,10 @@ public class WarehouseMain {
                          RedirectAttributes flash,
                          Locale locale) throws Exception {
         try {
-            deliveryMainInterface.save(delivery);
+            deliveryImp.save(delivery);
             model.addAttribute("success",
                     messageSource.getMessage("text.warehouseMain.document.success.save", null, locale));
-        }catch (PersistenceException e){
+        }catch (NullPointerException e){
             flash.addFlashAttribute("danger",
                     messageSource.getMessage("text.warehouseMain.document.danger.client", null, locale));
             return "redirect:/warehouseMain/document/form";
@@ -119,7 +129,6 @@ public class WarehouseMain {
         return "redirect:/warehouseMain/document/form/"+ delivery.getId();
     }
 
-
     @RequestMapping(value = "/warehouseMain/document/form/{id}")
     public String createItemDocument(@PathVariable("id")Long id,
                                      Model model,
@@ -127,7 +136,7 @@ public class WarehouseMain {
                                      RedirectAttributes flash,
                                      @RequestParam(value = "product",required = false)Long product,
                                      @RequestParam(value = "quantity",required = false)Long quantity){
-        Delivery delivery = deliveryMainInterface.findById(id);
+        Delivery delivery = deliveryImp.findById(id);
         List<ItemsDelivery>list = delivery.getItemdeliveries();
 
         if (product != null){
@@ -136,7 +145,7 @@ public class WarehouseMain {
             delivery.addItemsDelivery(new ItemsDelivery(product1,quantity,delivery));
         }
         try {
-            deliveryMainInterface.saveItem(delivery);
+            deliveryImp.saveItem(delivery);
         }catch (NullPointerException e){
 
             flash.addFlashAttribute("danger","Brak lub nie wystarczająca ilość towaru na magazynie");
@@ -156,13 +165,13 @@ public class WarehouseMain {
     }
 
     @RequestMapping(value = "/warehouseMain/document/form/submit",method = RequestMethod.POST)
-    public String saveItemDocument(@ModelAttribute("delivery") Delivery delivery,
+    public String submitDocument(@ModelAttribute("delivery") Delivery delivery,
                                    RedirectAttributes flash,
                                    Locale locale){
 
         if (!delivery.isConfirm()) {
             delivery.setConfirm(true);
-                deliveryMainInterface.saveItem(delivery);
+            deliveryImp.submit(delivery);
                         flash.addFlashAttribute("success",messageSource.getMessage("text.warehouseMain.success.submit",null,locale));
             return "redirect:/warehouseMain/document/form/"+delivery.getId();
         }else{
@@ -171,19 +180,61 @@ public class WarehouseMain {
         }
 
     }
-
     @RequestMapping(value ="warehouseMain/document/edit/{id}")
-        public String editDocument(@PathVariable("id")Long id,
-                                   RedirectAttributes flash,
-                                   Locale locale) {
-        Delivery delivery = deliveryMainInterface.findById(id);
-       Long documentId = delivery.getDocument().getId();
+    public String editDocument(@PathVariable("id")Long id,
+                               @RequestParam(value = "product",required = false)Long product,
+                               @RequestParam(value = "quantity",required = false)Long quantity,
+                               RedirectAttributes flash,
+                               Locale locale,
+                               Model model)throws Exception {
+        Delivery delivery = deliveryImp.findById(id);
+        List<Product> products = productRepository.findall();
+        if (product != null) {
+            Product product1 = productRepository.findOnebyId(product);
+            ItemsDelivery itemsDelivery = new ItemsDelivery(product1, quantity, delivery);
+            delivery.addItemsDelivery(itemsDelivery);
+            try {
+                itemDeliveryIntefrace.saveItem(itemsDelivery);
+            } catch (NullPointerException e) {
+
+                flash.addFlashAttribute("danger", "Brak lub nie wystarczająca ilość towaru na magazynie");
+
+                return "redirect:/warehouseMain/document/edit/" + delivery.getId();
+            }
+
+        }
+        Long documentId = delivery.getDocument().getId();
+        List<ItemsDelivery>itemsDeliveries = delivery.getItemdeliveries();
+        model.addAttribute("delivery",delivery);
+        model.addAttribute("itemsDeliveries",itemsDeliveries);
+        model.addAttribute("products",products);
+        model.addAttribute("title",messageSource.getMessage("text.warehouseMAIN.edit.title",null,locale));
         if (documentId == 1 || documentId == 2 ){
             flash.addFlashAttribute("danger",
-                    messageSource.getMessage("text.warehouseMain.edit.danger",null,locale));
+                    messageSource.getMessage("text.warehouseShop.edit.danger",null,locale));
             return "redirect:/warehouseMain/documents";
         }
-         return "warehouseMain/document/edit";
+        return "warehouseMain/document/edit";
     }
+    @RequestMapping(value ="warehouseMain/document/edit")
+    public String deleteItem(@RequestParam(value = "deleteId",required = false)Long deleteId,
+                             RedirectAttributes flash,
+                             Locale locale)throws Exception{
+
+        ItemsDelivery itemDelivery= itemDeliveryIntefrace.findOneById(deleteId);
+        Delivery delivery = itemDelivery.getDelivery();
+
+        try {
+            itemDeliveryIntefrace.delete(itemDelivery);
+        }catch (NullPointerException ne){
+            flash.addFlashAttribute("danger",
+                    messageSource.getMessage("text.warehouseMain.document.document.dangerDelete", null, locale));
+            return "redirect:/warehouseMain/document/edit/"+delivery.getId();
+        }
+
+        flash.addFlashAttribute("success",
+                messageSource.getMessage("text.warehouseShop.edit.deleteItem",null,locale));
+        return "redirect:/warehouseMain/document/edit/"+delivery.getId();
     }
+}
 

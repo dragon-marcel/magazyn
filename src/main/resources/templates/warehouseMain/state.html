@@ -3,6 +3,7 @@
 <head th:replace="layout/Layout :: head"/>
 
 <body>
+
 <div th:replace="layout/Layout :: navbar"/>
 <div th:replace="layout/Layout :: info"/>
 <div class="container ">
@@ -15,9 +16,9 @@
                     <th colspan="6"> <h2>LISTA PRODUKTÓW</h2> </th>
                 </tr>
                 <tr>
-                    <th>LP</th>
-                    <th>NAZWA</th>
-                    <th>ILOŚĆ</th>
+                    <th class="col-2">LP</th>
+                    <th>NAZWA PRODUKTU</th>
+                    <th class="col-2">ILOŚĆ</th>
                 </tr>
                 </thead>
                 <tbody th:each="state,lp:${stateProducts}">
@@ -30,9 +31,6 @@
             </table>
         </div>
     </div>
-    <div class="col-12">
-    </div>
-</div>
 </div>
 <footer th:replace="layout/layout::footer"/>
 </body>

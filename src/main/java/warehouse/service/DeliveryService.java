@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class DeliveryService {
-    @Autowired
-    private DeliveryMainRepository deliveryMainRepository;
+
 @Autowired
 private WarehouseRepository warehouseRepository;
+
     public double totalPrice(List<ItemsDelivery> itemsDeliveries){
         double sum =itemsDeliveries.stream().map(ItemsDelivery::getTotalPrice).reduce(Double::sum).get();
         return sum;

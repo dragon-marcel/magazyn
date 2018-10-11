@@ -16,6 +16,7 @@
                     <th>ID</th>
                     <th>OPIS</th>
                     <th>DATA</th>
+                    <th>DOKUMENT</th>
                     <th>URZYTKOWNIK</th>
                     <th>USUŃ</th>
 
@@ -26,6 +27,7 @@
                     <td th:text="${delivery.id}"></td>
                     <td th:text="${delivery.description }"></td>
                     <td th:text="${delivery.date}"></td>
+                    <td th:text="${delivery.document.name}"></td>
                     <td th:text="${delivery.nameUser}"></td>
                 </tr>
                 </tbody>
